@@ -1,10 +1,34 @@
 {
-  "name": "nodemongoapp",
-  "version": "0.0.1",
+  "name": "node-js-getting-started",
+  "version": "0.2.5",
+  "description": "A sample Node.js app using Express 4",
+  "engines": {
+    "node": "5.9.1"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "express": "latest",
-    "mongodb": "latest",
+    "express": "4.13.3",
     "body-parser": "latest",
-    "validator":"latest"
-  }
+    "validator": "latest",
+    "mongodb": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heroku/node-js-getting-started.git"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/heroku/node-js-getting-started/issues"
+  },
+  "homepage": "https://github.com/heroku/node-js-getting-started#readme",
+  "devDependencies": {},
+  "author": ""
 }
