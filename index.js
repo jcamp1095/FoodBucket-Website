@@ -43,8 +43,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // Required if we need to us
 // process.env.MONGOHQ_URL is the environment variable on Heroku for the MongoHQ add-on
 // If environment variables not found, fall back to mongodb://localhost/nodemongoexample
 // nodemongoexample is the name of the database
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/nodemongoexample';
-var MongoClient = require('mongodb').MongoClient, format = require('util').format;
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://heroku_m48kr2dc:ocq0pr57l50lc5m77cqbenqm1l@ds053380.mlab.com:53380/heroku_m48kr2dc';
+var MongoClient = require('mongodb').MongoClient, format = require('util').format
 var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
