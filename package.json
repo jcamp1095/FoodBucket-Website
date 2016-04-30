@@ -13,7 +13,8 @@
     "ejs": "2.4.1",
     "express": "4.13.3",
     "body-parser": "latest",
-    "validator": "latest"
+    "validator": "latest",
+    "mongodb": "latest"
   },
   "repository": {
     "type": "git",
