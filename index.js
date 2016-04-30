@@ -88,27 +88,52 @@ app.post('/sendFriend', function(request, response) {
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
 
-	var errormsg = '{"error":"Whoops, something is wrong with your data!"}';
+	// var errormsg = '{"error":"Whoops, something is wrong with your data!"}';
 
 	if (userId == null || userId == "" || friend_userId == null || friend_userId == "") {
-		response.send(errormsg);
+		response.send("ERROR 1");
 	}
 
 	//{ $push: { <field1>: <value1>, ... } }
-
-	
-	db.collection('users', function(error, collection) {
+	db.collection('users', function(error, theUsers) {
 		if (error) {
-			response.send(errormsg);
+			response.send("ERROR 2");
 		}
-
-		else {
-			collection.find({'userId': userId}.insert());
-		}
+		theUsers.update({"userId": userId}, {$push: {"friends": friend_userId}}, function(error, saved) {
+			if (error) {
+				response.send("ERROR 3");
+			}
+			theUsers.find().toArray(function(error, userData) {
+				if (error) {
+					response.send("ERROR 4");
+				}
+				response.send(userData);
+			});
+		});
 	});
-
-	
 });
+
+/*
+
+else {
+			theUsers.find({'userId': userId}.insert({$push: {friends: friend}}), function (error, cursor) {
+				if (error) {
+					response.send("ERROR 3");
+				}
+				else {
+					cursor.find().toArray(function(err, cursor){
+						if(!err){
+							response.send(cursor); 
+						}
+						else {
+							response.send("Error 4");
+						}
+					});
+				}
+
+			});
+		}
+*/
 
 
 
@@ -128,36 +153,34 @@ app.post('/sendRestaurant', function(request, response) {
 	var errormsg = '{"error":"Whoops, something is wrong with your data!"}';
 	var returnText = {}; 
 
+	var toInsert = {
+		"userId": userId,
+		"restaurant": restaurant,
+		"phone": phone,
+		"website": website,
+		"ratings": ratings,  
+		"lat": lat,
+		"lng": lng, 
+		"created_at": created_at,
+	};
 
-	if (1){
-		var toInsert = {
-			"userId": userId,
-			"restaurant": restaurant,
-			"phone": phone,
-			"website": website,
-			"ratings": ratings,  
-			"lat": lat,
-			"lng": lng, 
-			"created_at": created_at,
-		};
-		db.collection('bucketlist', function(error, bucket) {
+	db.collection('bucketlist', function(error, bucket) {
+		if (error) {
+			response.send(errormsg);
+		}
+		var id = bucket.insert(toInsert, function(error, saved) {
 			if (error) {
 				response.send(errormsg);
 			}
-			var id = bucket.insert(toInsert, function(error, saved) {
-				if (error) {
-					response.send(errormsg);
-				}
-				else {
-					bucket.find().toArray(function(err, cursor){
-						if(!err){
-							response.send(cursor); 
-						}
-					});
-				}
-		    });
-		});
-	}
+			else {
+				bucket.find().toArray(function(err, cursor){
+					if(!err){
+						response.send(cursor); 
+					}
+				});
+			}
+	    });
+	});
 });
 
 
