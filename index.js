@@ -73,14 +73,14 @@ app.get('/users', function(request, response) {
 				if (!err) {
 					response.send(cursor);
 				} else {
-					response.send('[]fdsa');
+					response.send(500);
 				}
 			});
 		});
 	}
 });
 
-/*
+
 // POST FRIENDS DATA TO DATABASE
 app.post('/sendFriend', function(request, response) {
 
@@ -94,28 +94,22 @@ app.post('/sendFriend', function(request, response) {
 		response.send(errormsg);
 	}
 
-	else {
-		var toInsert = {
-			friend: friend_userId
-		};
-	}
-
 	//{ $push: { <field1>: <value1>, ... } }
 
 	
-	db.collection('checkins', function(error, bucket) {
+	db.collection('users', function(error, collection) {
 		if (error) {
 			response.send(errormsg);
 		}
 
 		else {
-			collection.find({'userId': userId}.friends);
+			collection.find({'userId': userId}.insert());
 		}
 	});
 
 	
 });
-*/
+
 
 
 // POST RESTAURANT DATA
@@ -147,6 +141,9 @@ app.post('/sendRestaurant', function(request, response) {
 			"created_at": created_at,
 		};
 		db.collection('bucketlist', function(error, bucket) {
+			if (error) {
+				response.send(errormsg);
+			}
 			var id = bucket.insert(toInsert, function(error, saved) {
 				if (error) {
 					response.send(errormsg);
