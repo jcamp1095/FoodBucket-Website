@@ -123,13 +123,13 @@ app.post('/sendRestaurant', function(request, response) {
 
 	// Post Keys
 	var userId = request.body.userId;
-	// var restaurant = request.body.restaurant; 
-	// var phone = request.body.phone; 
-	// var website = request.body.website; 
-	// var ratings = parseFloat(request.body.ratings)
-	// var lat = parseFloat(request.body.lat); 
-	// var lng = parseFloat(request.body.lng);
-	// var created_at = new Date();
+	var restaurant = request.body.restaurant; 
+	var phone = request.body.phone; 
+	var website = request.body.website; 
+	var ratings = parseFloat(request.body.ratings)
+	var lat = parseFloat(request.body.lat); 
+	var lng = parseFloat(request.body.lng);
+	var created_at = new Date();
 
 	var errormsg = '{"error":"Whoops, something is wrong with your data!"}';
 	var returnText = {}; 
@@ -138,13 +138,13 @@ app.post('/sendRestaurant', function(request, response) {
 	if (1){
 		var toInsert = {
 			"userId": userId,
-			// "restaurant": restaurant,
-			// "phone": phone,
-			// "ratings": ratings,  
-			// "website": website, 
-			// "lat": lat,
-			// "lng": lng, 
-			// "created_at": created_at,
+			"restaurant": restaurant,
+			"phone": phone,
+			"ratings": ratings,  
+			"website": website, 
+			"lat": lat,
+			"lng": lng, 
+			"created_at": created_at,
 		};
 		db.collection('bucketlist', function(error, bucket) {
 			var id = bucket.insert(toInsert, function(error, saved) {
