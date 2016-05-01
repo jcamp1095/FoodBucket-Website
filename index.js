@@ -1,5 +1,10 @@
+/*______________________________________________________________________________
+|
+|
+|           			Server for Food Bucketlist Project        
+|
+|_____________________________________________________________________________*/
 
-/*-------            Server for Food Bucketlist Project        ---------------*/
 
 // Initialization
 var express = require('express');
@@ -14,6 +19,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 // See https://stackoverflow.com/questions/5710358/how-to-get-post-query-in-express-node-js
 app.use(bodyParser.json());
 // See https://stackoverflow.com/questions/25471856/express-throws-error-as-body-parser-deprecated-undefined-extended
@@ -34,6 +40,9 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 });
 
 app.use(express.static(__dirname + '/public'));
+
+// Global Variable
+var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 
 // TODO: Display the text with an HTML file. The grabbing from db.collection 
 app.get('/', function(request, response) {
@@ -61,34 +70,34 @@ app.get('/', function(request, response) {
 	// });
 });
 
+//
+// GET A SPECIFIC USER'S DATA
+//
+app.get('/user', function(request, response) {
 
-// GET USER DATA
-app.get('/users', function(request, response) {
-
-	var userId = request.query.userId; 
+	var userId = request.query.userId;
 	 
-	if(userId == "" || userId == undefined){
-		response.send("[dsa]");
+	if(userId == "" || userId == undefined) {
+		response.send(errormsg);
 	}
-	else{
-		db.collection('bucketlist', function(er, collection) {
-			collection.find({"userId": userId}).toArray(function(err, cursor) {
-				if (!err) {
-					response.send(cursor);
-				} else {
-					response.send(w500);
-				}
-			});
+	
+	db.collection('users', function(error, theUsers) {
+		theUsers.find({"userId": userId}).toArray(function(error, userData) {
+			if (error) {
+				response.send(500);
+			} 
+			response.send(userData);
 		});
-	}
+	});
 });
 
 
+//
 // POST A USER TO THE DATABASE
+//
 app.post('/sendUser', function(request, response) {
-	var userId = request.body.userId;
 
-	var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
+	var userId = request.body.userId;
 
 	if (userId == null || userId == "") {
 		request.response(errormsg);
@@ -96,15 +105,15 @@ app.post('/sendUser', function(request, response) {
 
 	db.collection('users', function(error, theUsers) {
 		if (error) {
-			response.send("ERROR A");
+			response.send(500);
 		}
 		var id = theUsers.insert({"userId": userId}, function(error, saved) {
 			if (error) {
-				response.send("ERROR B");
+				response.send(500);
 			}
 			theUsers.find().toArray(function(error, userData) {
 				if (error) {
-					response.send("ERROR C");
+					response.send(500);
 				}
 				response.send(userData);
 			});
@@ -112,31 +121,29 @@ app.post('/sendUser', function(request, response) {
 	});
 });
 
-
-// POST FRIENDS DATA TO DATABASE
+//
+// POST FRIENDS DATA TO A SPECIFIC USER IN THE DATABASE
+//
 app.post('/sendFriend', function(request, response) {
 
-	// Post key
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
 
-	var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
-
 	if (userId == null || friend_userId == null || userId == "" || friend_userId == "") {
-		response.send(userId);
+		response.send(errormsg);
 	}
 
 	db.collection('users', function(error, theUsers) {
 		if (error) {
-			response.send(errormsg);
+			response.send(500);
 		}
 		var id = theUsers.update({"userId": userId}, {$push: {"friends": friend_userId}}, function(error, saved) {
 			if (error) {
-				response.send(errormsg);
+				response.send(500);
 			}
 			theUsers.find().toArray(function(error, userData) {
 				if (error) {
-					response.send(errormsg);
+					response.send(500);
 				}
 				response.send(userData);
 			});
@@ -144,11 +151,11 @@ app.post('/sendFriend', function(request, response) {
 	});
 });
 
-
-// POST RESTAURANT DATA
+//
+// POST RESTAURANT DATA TO A SPECIFIC USER IN THE DATABASE
+//
 app.post('/sendRestaurant', function(request, response) {
 
-	// Post Keys
 	var userId = request.body.userId;
 	var restaurant = request.body.restaurant; 
 	var phone = request.body.phone; 
@@ -158,44 +165,45 @@ app.post('/sendRestaurant', function(request, response) {
 	var lng = parseFloat(request.body.lng);
 	var created_at = new Date();
 
-	var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
-	var returnText = {}; 
-
-	if (userId == null || userId == "") {
-		response.send(errormsg)
+	if (userId == null || userId == "" || restaurant == null || restaurant == "") {
+		response.send(errormsg);
 	}
 
 	var toInsert = {
-		"userId": userId,
-		"restaurant": restaurant,
-		"phone": phone,
-		"website": website,
-		"ratings": ratings,  
-		"lat": lat,
-		"lng": lng, 
-		"created_at": created_at,
+		"restaurantObj": {
+			"restaurant": restaurant,
+			"phone": phone,
+			"website": website,
+			"ratings": ratings,  
+			"lat": lat,
+			"lng": lng, 
+			"created_at": created_at
+		}
 	};
 
-	db.collection('bucketlist', function(error, bucket) {
+	db.collection('users', function(error, bucket) {
 		if (error) {
-			response.send(errormsg);
+			response.send(500);
 		}
-		var id = bucket.insert(toInsert, function(error, saved) {
+		var id = bucket.update({"userId": userId}, toInsert, function(error, saved) {
 			if (error) {
-				response.send(errormsg);
+				response.send(500);
 			}
 			else {
-				bucket.find().toArray(function(err, cursor){
-					if(!err){
-						response.send(cursor); 
+				bucket.find({"userId": userId}).toArray(function(error, user){
+					if(error){
+						response.send(500); 
 					}
+					response.send(user);
 				});
 			}
 	    });
 	});
 });
 
-
+//
+// Let the node app run
+//
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
