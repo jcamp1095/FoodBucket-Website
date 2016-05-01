@@ -45,10 +45,16 @@ app.use(express.static(__dirname + '/public'));
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 
 // TODO: Display the text with an HTML file. The grabbing from db.collection 
+// TODO: Delete this
+
+//
+// What does this do?
+//
 app.get('/', function(request, response) {
 
 	response.set('Content-Type', 'text/html');
 	response.send('<p>Hello</p>');
+});
 	// var indexPage = '';
 	// var sort = {"created_at": -1};
 
@@ -68,7 +74,7 @@ app.get('/', function(request, response) {
 	// 		}
 	// 	});
 	// });
-});
+
 
 //
 // GET A SPECIFIC USER'S DATA
@@ -85,7 +91,8 @@ app.get('/user', function(request, response) {
 		theUsers.find({"userId": userId}).toArray(function(error, userData) {
 			if (error) {
 				response.send(500);
-			} 
+			}
+
 			response.send(userData);
 		});
 	});
@@ -94,6 +101,7 @@ app.get('/user', function(request, response) {
 
 //
 // POST A USER TO THE DATABASE
+// 	-Sends
 //
 app.post('/sendUser', function(request, response) {
 
@@ -107,14 +115,17 @@ app.post('/sendUser', function(request, response) {
 		if (error) {
 			response.send(500);
 		}
+
 		var id = theUsers.insert({"userId": userId}, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}
+
 			theUsers.find().toArray(function(error, userData) {
 				if (error) {
 					response.send(500);
 				}
+
 				response.send(userData);
 			});
 		});
@@ -137,14 +148,17 @@ app.post('/sendFriend', function(request, response) {
 		if (error) {
 			response.send(500);
 		}
+
 		var id = theUsers.update({"userId": userId}, {$push: {"friends": friend_userId}}, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}
+
 			theUsers.find().toArray(function(error, userData) {
 				if (error) {
 					response.send(500);
 				}
+
 				response.send(userData);
 			});
 		});
@@ -153,11 +167,12 @@ app.post('/sendFriend', function(request, response) {
 
 //
 // POST RESTAURANT DATA TO A SPECIFIC USER IN THE DATABASE
+// POST
 //
 app.post('/sendRestaurant', function(request, response) {
 
 	var userId = request.body.userId;
-	var restaurant = request.body.restaurant; 
+	var name = request.body.name; 
 	var phone = request.body.phone; 
 	var website = request.body.website; 
 	var ratings = parseFloat(request.body.ratings)
@@ -170,8 +185,8 @@ app.post('/sendRestaurant', function(request, response) {
 	}
 
 	var toInsert = {
-		"restaurantObj": {
-			"restaurant": restaurant,
+		"restaurant": {
+			"name": name,
 			"phone": phone,
 			"website": website,
 			"ratings": ratings,  
@@ -185,18 +200,19 @@ app.post('/sendRestaurant', function(request, response) {
 		if (error) {
 			response.send(500);
 		}
-		var id = bucket.update({"userId": userId}, toInsert, function(error, saved) {
+
+		var id = bucket.update({"userId": userId}, {$push: {"bucketlist": toInsert}}, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}
-			else {
-				bucket.find({"userId": userId}).toArray(function(error, user){
-					if(error){
-						response.send(500); 
-					}
-					response.send(user);
-				});
-			}
+
+			bucket.find({"userId": userId}).toArray(function(error, user){
+				if(error) {
+					response.send(500); 
+				}
+
+				response.send(user);
+			});
 	    });
 	});
 });
@@ -209,4 +225,4 @@ app.listen(app.get('port'), function() {
 });
 
 
-// END OF FILE
+//____________________________END OF FILE_______________________________________
