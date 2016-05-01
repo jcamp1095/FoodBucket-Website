@@ -1,3 +1,6 @@
+
+/*-------            Server for Food Bucketlist Project        ---------------*/
+
 // Initialization
 var express = require('express');
 var bodyParser = require('body-parser'); // Required if we need to use HTTP query or post parameters
@@ -32,7 +35,7 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 
 app.use(express.static(__dirname + '/public'));
 
-//TODO: Display the text with an HTML file. The grabbing from db.collection 
+// TODO: Display the text with an HTML file. The grabbing from db.collection 
 app.get('/', function(request, response) {
 
 	response.set('Content-Type', 'text/html');
@@ -73,11 +76,40 @@ app.get('/users', function(request, response) {
 				if (!err) {
 					response.send(cursor);
 				} else {
-					response.send(500);
+					response.send(w500);
 				}
 			});
 		});
 	}
+});
+
+
+// POST A USER TO THE DATABASE
+app.post('/sendUser', function(request, response) {
+	var userId = request.body.userId;
+
+	var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
+
+	if (userId == null || userId == "") {
+		request.response(errormsg);
+	}
+
+	db.collection('users', function(error, theUsers) {
+		if (error) {
+			response.send("ERROR A");
+		}
+		var id = theUsers.insert({"userId": userId}, function(error, saved) {
+			if (error) {
+				response.send("ERROR B");
+			}
+			theUsers.find().toArray(function(error, userData) {
+				if (error) {
+					response.send("ERROR C");
+				}
+				response.send(userData);
+			});
+		});
+	});
 });
 
 
@@ -88,53 +120,29 @@ app.post('/sendFriend', function(request, response) {
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
 
-	// var errormsg = '{"error":"Whoops, something is wrong with your data!"}';
+	var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 
-	if (userId == null || userId == "" || friend_userId == null || friend_userId == "") {
-		response.send("ERROR 1");
+	if (userId == null || friend_userId == null || userId == "" || friend_userId == "") {
+		response.send(userId);
 	}
 
-	//{ $push: { <field1>: <value1>, ... } }
 	db.collection('users', function(error, theUsers) {
 		if (error) {
-			response.send("ERROR 2");
+			response.send(errormsg);
 		}
-		theUsers.update({"userId": userId}, {$push: {"friends": friend_userId}}, function(error, saved) {
+		var id = theUsers.update({"userId": userId}, {$push: {"friends": friend_userId}}, function(error, saved) {
 			if (error) {
-				response.send("ERROR 3");
+				response.send(errormsg);
 			}
 			theUsers.find().toArray(function(error, userData) {
 				if (error) {
-					response.send("ERROR 4");
+					response.send(errormsg);
 				}
 				response.send(userData);
 			});
 		});
 	});
 });
-
-/*
-
-else {
-			theUsers.find({'userId': userId}.insert({$push: {friends: friend}}), function (error, cursor) {
-				if (error) {
-					response.send("ERROR 3");
-				}
-				else {
-					cursor.find().toArray(function(err, cursor){
-						if(!err){
-							response.send(cursor); 
-						}
-						else {
-							response.send("Error 4");
-						}
-					});
-				}
-
-			});
-		}
-*/
-
 
 
 // POST RESTAURANT DATA
@@ -150,8 +158,12 @@ app.post('/sendRestaurant', function(request, response) {
 	var lng = parseFloat(request.body.lng);
 	var created_at = new Date();
 
-	var errormsg = '{"error":"Whoops, something is wrong with your data!"}';
+	var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 	var returnText = {}; 
+
+	if (userId == null || userId == "") {
+		response.send(errormsg)
+	}
 
 	var toInsert = {
 		"userId": userId,
@@ -188,6 +200,5 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
+
 // END OF FILE
-
-
