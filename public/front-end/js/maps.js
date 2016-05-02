@@ -262,6 +262,7 @@ function set_list_Marker(object)
 //send user
 function send_user_info(id, user_name) {
 
+        alert("send user info");
         FB.api('/me', function(response) {
                 id = response.id;
                 user_name = response.name;
