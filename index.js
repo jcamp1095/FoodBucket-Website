@@ -41,11 +41,11 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/front-end'));
 
 // Global Variable
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
-
+app.engine('html', require('ejs').renderFile);
 
 
 //
@@ -53,8 +53,8 @@ var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 //
 app.get('/', function(request, response) {
 
-	//response.set('Content-Type', 'text/html');
-	response.render('front-end/index.html');
+	response.set('Content-Type', 'text/html');
+	response.sendFile('front-end/index.html', {root: __dirname});
 });
 
 
