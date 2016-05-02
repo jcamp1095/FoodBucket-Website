@@ -53,8 +53,8 @@ var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 //
 app.get('/', function(request, response) {
 
-	response.set('Content-Type', 'text/html');
-	response.send('');
+	//response.set('Content-Type', 'text/html');
+	response.render('front-end/index.html');
 });
 
 
