@@ -62,6 +62,7 @@ app.get('/', function(request, response) {
 app.get('/user', function(request, response) {
 
 	var userId = request.query.userId;
+	var username = request.query.username;
 	 
 	if(userId == "" || userId == undefined) {
 		response.send(errormsg);
@@ -86,17 +87,23 @@ app.get('/user', function(request, response) {
 app.post('/sendUser', function(request, response) {
 
 	var userId = request.body.userId;
+	var username = request.body.username;
 
 	if (userId == null || userId == "") {
 		request.response(errormsg);
 	}
+
+	var toInsert = {
+		"userId": userId,
+		"username": username
+	};
 
 	db.collection('users', function(error, theUsers) {
 		if (error) {
 			response.send(500);
 		}
 
-		var id = theUsers.insert({"userId": userId}, function(error, saved) {
+		var id = theUsers.insert(toInsert, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}
@@ -153,10 +160,11 @@ app.post('/sendFriend', function(request, response) {
 app.post('/sendRestaurant', function(request, response) {
 
 	var userId = request.body.userId;
-	var name = request.body.name; 
-	var phone = request.body.phone; 
+	var username = request.body.username;
+	var restaurant = request.body.name; 
+	var phone = request.body.phone;
+	var ratings = parseFloat(request.body.ratings);
 	var website = request.body.website; 
-	var ratings = parseFloat(request.body.ratings)
 	var lat = parseFloat(request.body.lat); 
 	var lng = parseFloat(request.body.lng);
 	var created_at = new Date();
@@ -165,11 +173,13 @@ app.post('/sendRestaurant', function(request, response) {
 		response.send(errormsg);
 	}
 
-	var restaurant = {
-			"name": name,
+	var restaurantObj = {
+			"userId": userId,
+			"username": username,
+			"restaurant": restaurant,
 			"phone": phone,
-			"website": website,
 			"ratings": ratings,  
+			"website": website,
 			"lat": lat,
 			"lng": lng,
 			"created_at": created_at
@@ -180,7 +190,7 @@ app.post('/sendRestaurant', function(request, response) {
 			response.send(500);
 		}
 
-		var id = bucket.update({"userId": userId}, {$push: {"bucketlist": restaurant}}, function(error, saved) {
+		var id = bucket.update({"userId": userId}, {$push: {"bucketlist": restaurantObj}}, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}
