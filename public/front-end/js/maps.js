@@ -244,6 +244,7 @@ function set_list_Marker(object)
         var marker = new google.maps.Marker({
                 position: curr_loc,
                 map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
                 title: object.restaurant
         });
                 
