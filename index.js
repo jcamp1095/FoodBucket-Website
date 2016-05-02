@@ -44,7 +44,7 @@ app.use(express.static(__dirname + '/public'));
 // Global Variable
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 
-/*
+
 //
 // What does this do? What should I add?
 //
@@ -53,7 +53,7 @@ app.get('/', function(request, response) {
 	response.set('Content-Type', 'text/html');
 	response.send('');
 });
-*/
+
 
 
 //
