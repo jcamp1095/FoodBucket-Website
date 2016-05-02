@@ -97,7 +97,7 @@ function getMyLocation() {
                 if(code == 13) {
                     e.preventDefault();
                     loc = document.getElementById('search_input').value;
-                    
+
                     use_yelp(loc);
 
                     var geocoder = new google.maps.Geocoder();
@@ -219,8 +219,8 @@ function add_to_map()
                                 raw = data_request.responseText;
                                 data = JSON.parse(raw);
                                 console.log(data);
-                                for (i = 0; i < data['bucketlist'].length; i++) {
-                                        set_list_Marker(data['bucketlist'][i]);
+                                for (i = 0; i < data['Object']['bucketlist'].length; i++) {
+                                        set_list_Marker(data['Object']['bucketlist'][i]);
                                 }
                                 
                         } else if (data_request.readyState == 4 && data_request.status != 200) {
