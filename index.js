@@ -45,7 +45,6 @@ app.use(express.static(__dirname + '/front-end'));
 
 // Global Variable
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
-app.engine('html', require('ejs').renderFile);
 
 
 //
