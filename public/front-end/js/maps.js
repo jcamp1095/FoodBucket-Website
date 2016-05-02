@@ -91,7 +91,6 @@ function getMyLocation() {
             myLng = position.coords.longitude;
 
             renderMap();
-            send_user_info();
 
             $('#search_input').on('keypress', function(e){
                 var code = (e.keyCode ? e.keyCode : e.which);
@@ -178,25 +177,28 @@ function addtolist(name, phone, rating, url, lat, lng)
         FB.api('/me', function(response) {
                 id = response.id;
                 user_name = response.name;
-        });
-        
-        food_data = { "userId"     : id, 
-                  "restaurant" : name,
-                  "phone"      : phone, 
-                  "ratings"    : rating, 
-                  "website"    : url, 
-                  "lat"        : lat,
-                  "lng"        : lng,
-                  "created_at" : new Date()
-                };
 
-        $.ajax({
-         type: "POST",
-         url: "https://food-bucket.herokuapp.com/sendRestaurant",
-         data: food_data,
-         success: alert("it worked son"),
-         dataType: 'json'
+                send_user_info(id, user_name);
+                
+                food_data = { "userId"     : id, 
+                          "restaurant" : name,
+                          "phone"      : phone, 
+                          "ratings"    : rating, 
+                          "website"    : url, 
+                          "lat"        : lat,
+                          "lng"        : lng,
+                          "created_at" : new Date()
+                        };
+
+                $.ajax({
+                 type: "POST",
+                 url: "https://food-bucket.herokuapp.com/sendRestaurant",
+                 data: food_data,
+                 success: alert("it worked son"),
+                 dataType: 'json'
+                });
         });
+
 }
 
 
@@ -236,6 +238,7 @@ function set_list_Marker(object)
 {
         latit = object['lat'];
         longit = object['lng'];
+
         var curr_loc = new google.maps.LatLng(latit, longit);
         var marker = new google.maps.Marker({
                 position: curr_loc,
@@ -254,15 +257,9 @@ function set_list_Marker(object)
         });
 }
 
-function send_user_info() {
+function send_user_info(id, user_name) {
 
-        var user_name;
-        var id;
-
-        FB.api('/me', function(response) {
-                id = response.id;
-                user_name = response.name;
-        });
+        alert(id);
         
         user_data = { "userId"     : id, 
                       "username"       : user_name,
