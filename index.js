@@ -180,20 +180,18 @@ app.post('/sendRestaurant', function(request, response) {
 	var lng = parseFloat(request.body.lng);
 	var created_at = new Date();
 
-	if (userId == null || userId == "" || restaurant == null || restaurant == "") {
-		response.send(errormsg);
+	if (userId == null || userId == "" || name == null || name == "") {
+		response.send("Error 1");
 	}
 
-	var toInsert = {
-		"restaurant": {
+	var restaurant = {
 			"name": name,
 			"phone": phone,
 			"website": website,
 			"ratings": ratings,  
 			"lat": lat,
-			"lng": lng, 
+			"lng": lng,
 			"created_at": created_at
-		}
 	};
 
 	db.collection('users', function(error, bucket) {
@@ -201,7 +199,7 @@ app.post('/sendRestaurant', function(request, response) {
 			response.send(500);
 		}
 
-		var id = bucket.update({"userId": userId}, {$push: {"bucketlist": toInsert}}, function(error, saved) {
+		var id = bucket.update({"userId": userId}, {$push: {"bucketlist": restaurant}}, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}
