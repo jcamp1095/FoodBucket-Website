@@ -44,36 +44,16 @@ app.use(express.static(__dirname + '/public'));
 // Global Variable
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 
-// TODO: Display the text with an HTML file. The grabbing from db.collection 
-// TODO: Delete this
-
+/*
 //
-// What does this do?
+// What does this do? What should I add?
 //
 app.get('/', function(request, response) {
 
 	response.set('Content-Type', 'text/html');
-	response.send('<p>Hello</p>');
+	response.send('');
 });
-	// var indexPage = '';
-	// var sort = {"created_at": -1};
-
-	// db.collection('checkins', function(er, collection) {
-	// 	collection.find().sort(sort).toArray(function(err, cursor) {
-	// 		if (!err) {
-	// 			indexPage += "<!DOCTYPE HTML><html><head><title>Checkins</title></head><body><h1>Look Who's Checked In!</h1>";
-	// 			for (var count = 0; count < cursor.length; count++) {
-	// 				indexPage += "<p>" + cursor[count].login + " checked in at " +
-	// 				               cursor[count].lat + " " + cursor[count].lng + " " + 
-	// 				               "on " + cursor[count].created_at + ".</p>";
-	// 			}
-	// 			indexPage += "</body></html>"
-	// 			response.send(indexPage);
-	// 		} else {
-	// 			response.send('<!DOCTYPE HTML><html><head><title>Who Checked In?</title></head><body><h1>Whoops, something went terribly wrong!</h1></body></html>');
-	// 		}
-	// 	});
-	// });
+*/
 
 
 //
@@ -101,7 +81,7 @@ app.get('/user', function(request, response) {
 
 //
 // POST A USER TO THE DATABASE
-// 	-Sends
+// - Sends back the JSON object of the user who is specified by the userId
 //
 app.post('/sendUser', function(request, response) {
 
@@ -134,6 +114,7 @@ app.post('/sendUser', function(request, response) {
 
 //
 // POST FRIENDS DATA TO A SPECIFIC USER IN THE DATABASE
+// - Sends back the object of the user who is specified by the userId
 //
 app.post('/sendFriend', function(request, response) {
 
@@ -167,7 +148,7 @@ app.post('/sendFriend', function(request, response) {
 
 //
 // POST RESTAURANT DATA TO A SPECIFIC USER IN THE DATABASE
-// POST
+// - Sends back the object of the user who is specified by the userId
 //
 app.post('/sendRestaurant', function(request, response) {
 
@@ -181,7 +162,7 @@ app.post('/sendRestaurant', function(request, response) {
 	var created_at = new Date();
 
 	if (userId == null || userId == "" || name == null || name == "") {
-		response.send("Error 1");
+		response.send(errormsg);
 	}
 
 	var restaurant = {
