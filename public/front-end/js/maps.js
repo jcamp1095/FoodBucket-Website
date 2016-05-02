@@ -259,6 +259,7 @@ function set_list_Marker(object)
         });
 }
 
+//send user
 function send_user_info(id, user_name) {
 
         FB.api('/me', function(response) {
