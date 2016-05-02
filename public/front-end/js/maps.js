@@ -97,8 +97,7 @@ function getMyLocation() {
                 if(code == 13) {
                     e.preventDefault();
                     loc = document.getElementById('search_input').value;
-
-                    send_user_info();
+                    
                     use_yelp(loc);
 
                     var geocoder = new google.maps.Geocoder();
