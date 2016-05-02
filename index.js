@@ -171,7 +171,7 @@ app.post('/sendRestaurant', function(request, response) {
 	var lng = parseFloat(request.body.lng);
 	var created_at = new Date();
 
-	if (userId == null || userId == "" || name == null || name == "") {
+	if (userId == null || userId == "" || restaurant == null || restaurant == "") {
 		response.send(errormsg);
 	}
 
