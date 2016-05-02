@@ -98,6 +98,7 @@ function getMyLocation() {
                     e.preventDefault();
                     loc = document.getElementById('search_input').value;
 
+                    send_user_info();
                     use_yelp(loc);
 
                     var geocoder = new google.maps.Geocoder();
@@ -178,7 +179,6 @@ function addtolist(name, phone, rating, url, lat, lng)
                 id = response.id;
                 user_name = response.name;
 
-                send_user_info(id, user_name);
                 
                 food_data = { "userId"     : id, 
                           "restaurant" : name,
@@ -261,18 +261,20 @@ function set_list_Marker(object)
 
 function send_user_info(id, user_name) {
 
-        alert(id);
-        
-        user_data = { "userId"     : id, 
-                      "username"       : user_name,
-                    };
+        FB.api('/me', function(response) {
+                id = response.id;
+                user_name = response.name;
+                user_data = { "userId"     : id, 
+                              "username"       : user_name,
+                            };
 
-        $.ajax({
-         type: "POST",
-         url: "https://food-bucket.herokuapp.com/sendUser",
-         data: user_data,
-         success: alert ("sent user data"),
-         dataType: 'json'
+                $.ajax({
+                 type: "POST",
+                 url: "https://food-bucket.herokuapp.com/sendUser",
+                 data: user_data,
+                 success: alert ("sent user data"),
+                 dataType: 'json'
+                });
         });
 }
 
