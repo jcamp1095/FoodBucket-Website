@@ -91,6 +91,7 @@ function getMyLocation() {
             myLng = position.coords.longitude;
 
             renderMap();
+            send_user_info();
 
             $('#search_input').on('keypress', function(e){
                 var code = (e.keyCode ? e.keyCode : e.which);
@@ -180,7 +181,6 @@ function addtolist(name, phone, rating, url, lat, lng)
         });
         
         food_data = { "userId"     : id, 
-                  "username"       : user_name,
                   "restaurant" : name,
                   "phone"      : phone, 
                   "ratings"    : rating, 
@@ -253,3 +253,27 @@ function set_list_Marker(object)
                 infowindow.open(map, marker);
         });
 }
+
+function send_user_info() {
+
+        var user_name;
+        var id;
+
+        FB.api('/me', function(response) {
+                id = response.id;
+                user_name = response.name;
+        });
+        
+        user_data = { "userId"     : id, 
+                      "username"       : user_name,
+                    };
+
+        $.ajax({
+         type: "POST",
+         url: "https://food-bucket.herokuapp.com/sendUser",
+         data: user_data,
+         success: alert ("sent user data"),
+         dataType: 'json'
+        });
+}
+

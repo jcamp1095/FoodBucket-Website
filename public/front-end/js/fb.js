@@ -1,4 +1,4 @@
- window.fbAsyncInit = function() {
+window.fbAsyncInit = function() {
     FB.init({
       appId      : '1030706586965286',
       xfbml      : true,
@@ -42,6 +42,8 @@ function checkLoginState() {
         statusChangeCallback(response);
     });
 }
+
+
 
 function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
