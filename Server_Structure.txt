@@ -1,16 +1,25 @@
 Collection: Groups
 
 [
-	"group": {
-		"people": [
-			person,
-			...
-		]
-		"restaurants": [
-			restaurant,
-			...
-		]
+	{
+		"group": {
+			"people": [
+				{
+					person,
+					...
+				},
+				...
+			]
 
-	
-	}
+			"restaurants": [
+				{
+					"restaurant",
+					...
+				},
+				...
+			]
+
+		
+		},
+	...
 ]

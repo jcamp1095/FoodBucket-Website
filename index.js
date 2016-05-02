@@ -163,7 +163,7 @@ app.post('/sendRestaurant', function(request, response) {
 
 	var userId = request.body.userId;
 	
-	var restaurant = request.body.name; 
+	var restaurant = request.body.restaurant; 
 	var phone = request.body.phone;
 	var ratings = parseFloat(request.body.ratings);
 	var website = request.body.website; 
