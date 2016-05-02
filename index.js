@@ -15,6 +15,7 @@ var validator = require('validator'); // See documentation at https://github.com
 var app = express();
 app.set('port', (process.env.PORT || 5000));
 
+// Enables cross-origin resource sharing
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -63,10 +64,6 @@ app.get('/', function(request, response) {
 //
 app.get('/user', function(request, response) {
 
-	// Enable Cross-origin resource sharing
-	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "X-Requested-With");
-
 	var userId = request.query.userId;
 	var username = request.query.username;
 	 
@@ -91,10 +88,6 @@ app.get('/user', function(request, response) {
 // - Sends back the JSON object of the user who is specified by the userId
 //
 app.post('/sendUser', function(request, response) {
-
-	// Enable Cross-origin resource sharing
-	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var userId = request.body.userId;
 	var username = request.body.username;
@@ -135,10 +128,6 @@ app.post('/sendUser', function(request, response) {
 //
 app.post('/sendFriend', function(request, response) {
 
-	// Enable Cross-origin resource sharing
-	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "X-Requested-With");
-
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
 
@@ -172,10 +161,6 @@ app.post('/sendFriend', function(request, response) {
 // - Sends back the object of the user who is specified by the userId
 //
 app.post('/sendRestaurant', function(request, response) {
-
-	// Enable Cross-origin resource sharing
-	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var userId = request.body.userId;
 	var username = request.body.username;
