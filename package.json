@@ -1,5 +1,5 @@
 {
-  "name": "node-js-getting-started",
+  "name": "food-bucket",
   "version": "0.2.5",
   "description": "A sample Node.js app using Express 4",
   "engines": {
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heroku/node-js-getting-started.git"
+    "url": "git+https://git.heroku.com/food-bucket.git"
   },
   "keywords": [
     "node",
@@ -26,9 +26,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/heroku/node-js-getting-started/issues"
+    "url": "https://git.heroku.com/food-bucket/issues"
   },
-  "homepage": "https://github.com/heroku/node-js-getting-started#readme",
+  "homepage": "https://git.heroku.com/food-bucket#readme",
   "devDependencies": {},
   "author": ""
 }
