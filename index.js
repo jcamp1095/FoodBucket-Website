@@ -65,7 +65,7 @@ app.get('/user', function(request, response) {
 
 	// Enable Cross-origin resource sharing
 	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var userId = request.query.userId;
 	var username = request.query.username;
@@ -94,7 +94,7 @@ app.post('/sendUser', function(request, response) {
 
 	// Enable Cross-origin resource sharing
 	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var userId = request.body.userId;
 	var username = request.body.username;
@@ -137,7 +137,7 @@ app.post('/sendFriend', function(request, response) {
 
 	// Enable Cross-origin resource sharing
 	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
@@ -175,7 +175,7 @@ app.post('/sendRestaurant', function(request, response) {
 
 	// Enable Cross-origin resource sharing
 	response.header("Access-Control-Allow-Origin", "*");
-	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var userId = request.body.userId;
 	var username = request.body.username;
