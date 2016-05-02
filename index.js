@@ -16,11 +16,11 @@ var app = express();
 app.set('port', (process.env.PORT || 5000));
 
 // Enables cross-origin resource sharing
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});
+});*/
 
 // See https://stackoverflow.com/questions/5710358/how-to-get-post-query-in-express-node-js
 app.use(bodyParser.json());
@@ -41,7 +41,7 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
-app.use(express.static(__dirname + '/front-end'));
+app.use(express.static(__dirname + '/public/front-end'));
 
 // Global Variable
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
@@ -53,7 +53,7 @@ var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 app.get('/', function(request, response) {
 
 	//response.set('Content-Type', 'text/html');
-	response.sendFile('front-end/index.html', {root: __dirname});
+	response.sendFile('public/front-end/index.html', {root: __dirname});
 });
 
 
