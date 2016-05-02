@@ -52,7 +52,7 @@ var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 //
 app.get('/', function(request, response) {
 
-	//response.set('Content-Type', 'text/html');
+	response.set('Content-Type', 'text/html'); // Change this?
 	response.sendFile('public/front-end/index.html', {root: __dirname});
 });
 
@@ -162,7 +162,7 @@ app.post('/sendFriend', function(request, response) {
 app.post('/sendRestaurant', function(request, response) {
 
 	var userId = request.body.userId;
-	var username = request.body.username;
+	
 	var restaurant = request.body.name; 
 	var phone = request.body.phone;
 	var ratings = parseFloat(request.body.ratings);
@@ -176,8 +176,6 @@ app.post('/sendRestaurant', function(request, response) {
 	}
 
 	var restaurantObj = {
-			"userId": userId,
-			"username": username,
 			"restaurant": restaurant,
 			"phone": phone,
 			"ratings": ratings,  

@@ -1,11 +1,16 @@
--Users
-	-userId
-		-friends: {friend_userId: 1, friend_userId: 2}
-		-restaurantObjs: {
-			-restaurantObj {
-				restaurant
-				phone
-				website
+Collection: Groups
 
-			}
-		}
+[
+	"group": {
+		"people": [
+			person,
+			...
+		]
+		"restaurants": [
+			restaurant,
+			...
+		]
+
+	
+	}
+]
