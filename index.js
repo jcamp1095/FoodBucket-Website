@@ -1,7 +1,8 @@
 /*______________________________________________________________________________
 |
 |
-|           			Server for Food Bucketlist Project        
+|           			Server for Food Bucketlist Project 
+|       
 |
 |_____________________________________________________________________________*/
 
@@ -45,6 +46,7 @@ app.use(express.static(__dirname + '/public'));
 var errormsg = '{"error": "Whoops, something is wrong with your data!"}';
 
 
+
 //
 // What does this do? What should I add?
 //
@@ -60,6 +62,10 @@ app.get('/', function(request, response) {
 // GET A SPECIFIC USER'S DATA
 //
 app.get('/user', function(request, response) {
+
+	// Enable Cross-origin resource sharing
+	response.header("Access-Control-Allow-Origin", "*");
+	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 	var userId = request.query.userId;
 	var username = request.query.username;
@@ -85,6 +91,10 @@ app.get('/user', function(request, response) {
 // - Sends back the JSON object of the user who is specified by the userId
 //
 app.post('/sendUser', function(request, response) {
+
+	// Enable Cross-origin resource sharing
+	response.header("Access-Control-Allow-Origin", "*");
+	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 	var userId = request.body.userId;
 	var username = request.body.username;
@@ -125,6 +135,10 @@ app.post('/sendUser', function(request, response) {
 //
 app.post('/sendFriend', function(request, response) {
 
+	// Enable Cross-origin resource sharing
+	response.header("Access-Control-Allow-Origin", "*");
+	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
 
@@ -158,6 +172,10 @@ app.post('/sendFriend', function(request, response) {
 // - Sends back the object of the user who is specified by the userId
 //
 app.post('/sendRestaurant', function(request, response) {
+
+	// Enable Cross-origin resource sharing
+	response.header("Access-Control-Allow-Origin", "*");
+	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 	var userId = request.body.userId;
 	var username = request.body.username;
