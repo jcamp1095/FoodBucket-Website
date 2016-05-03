@@ -170,17 +170,23 @@ app.post('/sendFriend', function(request, response) {
 
 	var userId = request.body.userId;
 	var friend_userId = request.body.friend_userId;
+	var friend_name = request.body.friend_name;
 
 	if (userId == null || friend_userId == null || userId == "" || friend_userId == "") {
 		response.send(errormsg);
 	}
+
+	var friendObj = {
+			"userId": friend_userId,
+			"username": friend_name
+	};
 
 	db.collection('users', function(error, theUsers) {
 		if (error) {
 			response.send(500);
 		}
 
-		var id = theUsers.update({"userId": userId}, {$push: {"friends": friend_userId}}, function(error, saved) {
+		var id = theUsers.update({"userId": userId}, {$push: {"friends": friendObj}}, function(error, saved) {
 			if (error) {
 				response.send(500);
 			}

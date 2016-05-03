@@ -386,3 +386,50 @@ function MyBucketController($scope) {
     
 }
 
+function GroupController($scope) {
+
+        var friendslist = [];
+
+        $(document).on('fbload', function(){
+            FB.api('/me', function(response) { 
+                id = response.id;
+                user_name = response.name;
+
+                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                var data_request = new XMLHttpRequest();
+
+                data_request.open("GET", url, true);
+                
+                data_request.onreadystatechange = function () {
+                        if (data_request.readyState == 4 && data_request.status == 200) {
+                                raw = data_request.responseText;
+                                data = JSON.parse(raw);
+                                for (i = 0; i < data['0']['friends'].length; i++) {
+                                        name_data = data['0']['friends'][i]['username'];
+                                        friendslist.push(name_data);
+                                        
+                                }
+
+                                $scope.$apply(function() {
+                                    $scope.friends = friendslist;
+                                });
+                            
+                                //put a restaurant on a map
+                                $scope.$apply(function() {
+                                    $scope.put_friend_map = function(name) { 
+
+                                    };
+                                });
+                                
+                        } else if (data_request.readyState == 4 && data_request.status != 200) {
+                                alert("Failed to Load Data!");
+                        }
+                        
+                };
+
+                data_request.send(null);
+            });
+        });
+    
+}
+

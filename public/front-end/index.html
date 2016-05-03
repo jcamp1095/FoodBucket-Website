@@ -59,11 +59,11 @@
                            
                         </ul>
                     </li>
-                    <li>
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i></span> Group Bucketlist</a>
-                        <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>link2</a></li>
+                    <li ng-controller="GroupController">
+                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i></span> Group Bucketlists</a>
+                        <ul ng-repeat="friend in friends" class="nav-pills nav-stacked" style="list-style-type:none;">
+                            <li><a href="#" ng-click="put_friend_map(friend.name)"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>{{friend.name}}</a></li>
+                           
                         </ul>
                     </li>
                     <li>
@@ -85,8 +85,10 @@
             <h4 class="modal-title">Add friends to your group bucket list!</h4>
           </div>
           <div class="modal-body">
+            <div id="placeholder" ></div>
             <script>
             function find_friends(){
+                    all_people = [];
                     FB.api('/me', function(response) { 
                         id = response.id;
                         user_name = response.name;
@@ -94,23 +96,45 @@
                         var data_request = new XMLHttpRequest();
 
                         data_request.open("GET", url, true);
-                        
+
                         data_request.onreadystatechange = function () {
                                 if (data_request.readyState == 4 && data_request.status == 200) {
-                                        alert("got here");
                                         raw = data_request.responseText;
                                         data = JSON.parse(raw);
-                                        console.log(data);
-                                        /*for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                                name_data = data['0']['bucketlist'][i]['restaurant'];
-                                                names = {name: name_data};
-                                                restaurant_names.push(names);
-                                                
-                                        }*/
+                                        for (i = 0; i < data.length; i++) {
+                                                name = data[i]['username'];
+                                                id = data[i]['userId'];
+                                                name_data = {user_name:name, user_id:id};
+                                                all_people.push(name_data);
+                                        }
+                                        
+                                        output_string = "";
+                                        for (i = 0; i < all_people.length; i++) {
+                                                output_string+="<li><a href='#' onclick='sendfriend(\"" + id +"\", \"" + all_people[i].user_id +"\"\"" + all_people[i].user_name +"\")' </a>" + all_people[i].user_name + "</li>";
+                                        }
+
+                                        document.getElementById("placeholder").innerHTML=output_string;
                                 };   
                         };
+
+                        data_request.send(null);
                     });     
             }; 
+
+            function sendfriend(myid, friend_id, friend_name) {
+                    friend_data = { "userId"     : myid, 
+                          "friend_userId"  : friend_id,
+                          "friend_name" : friend_name
+                    };
+
+                    $.ajax({
+                     type: "POST",
+                     url: "https://food-bucket.herokuapp.com/sendFriend",
+                     data: friend_data,
+                     success: alert("sent friend"),
+                     dataType: 'json'
+                    });
+            }
             </script>
           </div>
           <div class="modal-footer">
