@@ -56,10 +56,15 @@ app.get('/', function(request, response) {
 	response.sendFile('public/front-end/index.html', {root: __dirname});
 });
 
+/*______________________________________________________________________________
+
+								USERS COLLECTION
+______________________________________________________________________________*/
 
 
 //
 // GET A SPECIFIC USER'S DATA
+// - Sends back the group
 //
 app.get('/user', function(request, response) {
 
@@ -71,6 +76,10 @@ app.get('/user', function(request, response) {
 	}
 	
 	db.collection('users', function(error, theUsers) {
+		if (error) {
+			response.send(500);
+		}
+
 		theUsers.find({"userId": userId}).toArray(function(error, userData) {
 			if (error) {
 				response.send(500);
@@ -80,7 +89,6 @@ app.get('/user', function(request, response) {
 		});
 	});
 });
-
 
 //
 // GET ALL USERS
@@ -108,7 +116,7 @@ app.get('/people', function(request, response) {
 
 //
 // POST A USER TO THE DATABASE
-// - Sends back the JSON object of the user who is specified by the userId
+// - Sends back the entire collection of users
 //
 app.post('/sendUser', function(request, response) {
 
@@ -126,28 +134,37 @@ app.post('/sendUser', function(request, response) {
 
 	db.collection('users', function(error, theUsers) {
 		if (error) {
-			response.send(500);
+			response.send("ERROR 1");
 		}
 
-		var id = theUsers.insert(toInsert, function(error, saved) {
-			if (error) {
-				response.send(500);
+		theUsers.findOne({"userId":userId}, function(notFound, found) {
+			if (found == null) {
+				var id = theUsers.insert(toInsert, function(error, saved) {
+					if (error) {
+						response.send(500);
+					}
+
+					theUsers.find().toArray(function(error, userData) {
+						if (error) {
+							response.send(500);
+						}
+
+						response.send(userData);
+					});
+				});
 			}
 
-			theUsers.find().toArray(function(error, userData) {
-				if (error) {
-					response.send(500);
-				}
-
-				response.send(userData);
-			});
-		});
+			else {
+				response.send(200);
+			}
+		});	
 	});
 });
 
 //
 // POST FRIENDS DATA TO A SPECIFIC USER IN THE DATABASE
 // - Sends back the object of the user who is specified by the userId
+//   with the friend inserted
 //
 app.post('/sendFriend', function(request, response) {
 
@@ -168,7 +185,7 @@ app.post('/sendFriend', function(request, response) {
 				response.send(500);
 			}
 
-			theUsers.find().toArray(function(error, userData) {
+			theUsers.find({"userId": userId}).toArray(function(error, userData) {
 				if (error) {
 					response.send(500);
 				}
@@ -227,6 +244,67 @@ app.post('/sendRestaurant', function(request, response) {
 				response.send(user);
 			});
 	    });
+	});
+});
+
+/*______________________________________________________________________________
+
+								GROUPS COLLECTION
+______________________________________________________________________________*/
+
+//
+// GET GROUP
+// - Sends back the group
+//
+app.get('/group', function(request, response) {
+
+	var groupName = request.query.group;
+
+	if (groupName == null || groupName == "") {
+		response.send(errormsg);
+	}
+
+	db.collection('groups', function(error, theGroups) {
+		if (error) {
+			response.send(500);
+		}
+
+		theGroups.find().toArray(function(error, groupData) {
+			if (error) {
+				response.send(errormsg);
+			}
+
+			response.send(groupData);
+		});
+	});
+});
+
+//
+// POST GROUP
+// - Sends back all documents in the collection: GROUPS
+//
+app.post('sendGroup', function(request, response) {
+	var groupName = request.body.groupName;
+
+	if (groupName == null || groupName == "") {
+		response.send(errormsg);
+	}
+
+	db.collection('groups', function(error, theGroups) {
+		if (error) {
+			response.send(500);
+		}
+
+		// edit!
+
+			var id = theGroups.insert({"groupName": groupName}, function(error, saved) {
+			if (error) {
+				response.send(500);
+			}
+
+			// theGroups.find().toArray(function(error, g))
+			});
+
 	});
 });
 
