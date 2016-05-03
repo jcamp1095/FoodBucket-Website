@@ -1,25 +1,36 @@
+Collection: Users
+
+[
+	{
+		"_id": "___",
+		"userId": "___"
+		"friends": [ 
+			"___", 
+			...
+		]
+		"bucketlist": [
+			"___",
+			...
+		]
+	},
+	...
+]
+
 Collection: Groups
 
 [
 	{
-		"group": {
-			"people": [
-				{
-					person,
-					...
-				},
-				...
-			]
-
-			"restaurants": [
-				{
-					"restaurant",
-					...
-				},
-				...
-			]
-
-		
-		},
+		"_id": "___",
+		"groupName": "___"
+		"people": [
+			"___",
+			...
+		]
+		"groupBucketlist": [
+			"___",
+			...
+		]
+	},
 	...
 ]
+
