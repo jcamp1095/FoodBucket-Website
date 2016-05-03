@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
     <head>
         <meta charset="UTF-8">
         <title>Awesome Bootstrap 3 Sidebar Navigation</title>
@@ -51,11 +51,11 @@
             <!-- SideBar -->
             <div id="sidebar-wrapper">
                 <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-                    <li>
+                    <li ng-controller="MyBucketController">
                         <a href="#" onclick='add_to_map()'><span class="fa-stack fa-lg pull-left"><i class="fa fa-user fa-stack-1x "></i></span> My Bucketlist</a>
-                        <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>link1</a></li>
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>link2</a></li>
+                        <ul ng-repeat="name in restaurants" class="nav-pills nav-stacked" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>{{name.name}}</a></li>
+                           
                         </ul>
                     </li>
                     <li>
@@ -73,10 +73,45 @@
         </div>
     </div>
 
+
     <!-- Javascript imports -->
 
     <script src="js/maps.js"></script>
     <script src="js/sidebar.js"></script>
+        <script>
+        function MyBucketController($scope) {
+            var restaurants = [];
+            FB.api('/me', function(response) {
+                id = response.id;
+                user_name = response.name;
+
+                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                var data_request = new XMLHttpRequest();
+
+                data_request.open("GET", url, true);
+                
+                data_request.onreadystatechange = function () {
+                        if (data_request.readyState == 4 && data_request.status == 200) {
+                                raw = data_request.responseText;
+                                data = JSON.parse(raw);
+                                console.log(data);
+                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                        name = {name: data['0']['bucketlist']['restaurant']};
+                                        restaurants[i] = name;
+                                }
+                                
+                        } else if (data_request.readyState == 4 && data_request.status != 200) {
+                                alert("Failed to Load Data!");
+                        }
+                };
+
+                data_request.send(null);
+
+                $scope.restaurants = restaurants;
+            });
+        }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
 
     </body>
 </html>
