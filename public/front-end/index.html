@@ -52,8 +52,8 @@
                 <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
                     <li ng-controller="MyBucketController">
                         <a href="#" onclick='add_to_map()'><span class="fa-stack fa-lg pull-left"><i class="fa fa-user fa-stack-1x "></i></span> My Bucketlist</a>
-                        <ul ng-repeat="name in restaurants" class="nav-pills nav-stacked" style="list-style-type:none;">
-                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>{{name.name}}</a></li>
+                        <ul ng-repeat="restaurant in restaurants" class="nav-pills nav-stacked" style="list-style-type:none;">
+                            <li><a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>{{restaurant.name}}</a></li>
                            
                         </ul>
                     </li>
@@ -80,12 +80,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <script>
     function MyBucketController($scope) {
+
+        var restaurant_names = [];
+
         $(document).on('fbload', function(){
             FB.api('/me', function(response) { 
                 id = response.id;
                 user_name = response.name;
-
-                var restaurant_names = [];
 
                 var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
                 var data_request = new XMLHttpRequest();
@@ -99,22 +100,33 @@
                                 console.log(data);
                                 for (i = 0; i < data['0']['bucketlist'].length; i++) {
                                         name_data = data['0']['bucketlist'][i]['restaurant'];
-                                        names = {"name": name_data};
-                                        console.log(names);
-                                        restaurant_names[i] = names;
+                                        names = {name: name_data};
+                                        alert(name_data);
+                                        restaurant_names.push(names);
+                                        
                                 }
+                                alert("Done");
+                                console.log(restaurant_names);
+                                alert("End");
+
+                                $scope.$apply(function() {
+                                    $scope.restaurants = restaurant_names;
+                                });
+                            
+                                
                                 
                         } else if (data_request.readyState == 4 && data_request.status != 200) {
                                 alert("Failed to Load Data!");
                         }
-
-                        $scope.restaurants = restaurant_names;
+                        
                 };
 
                 data_request.send(null);
             });
         });
+    
     }
+
     </script>
 
     </body>
