@@ -261,7 +261,13 @@ function set_list_Marker(object)
 
                 var message = "<b>Name: </b>" + object['restaurant'] + "<BR><b>Phone Number: </b>" + 
                     object['phone'] + "<BR><b>Yelp Rating (out of 5): </b>" + object['ratings'] + 
-                    "<BR><b>Website: </b>" + object['website'];
+                    "<BR><b>Website: </b>" + object['website'] +  "<BR><button onClick='sendMail(\"" + object['restaurant'] +"\",\""
+                                                    + object['display_phone'] +"\",\""
+                                                    + object['rating'] +"\",\""
+                                                    + object['url'] +"\",\""
+                                                    + object['lat'] +"\",\""
+                                                    + object['lng'] +"\",\""
+                    +"\")'> Recommend to a friend!</button>";
 
                 infowindow.setContent(message); 
                 infowindow.open(map, marker);
@@ -290,9 +296,93 @@ function send_user_info(id, user_name) {
 
 
 function sendMail(name, phone, rating, url, lat, lng) {
-    var message = "&body=Hey! Check out this restaurant that I found on Bucket List.  Its SOOOO cool.  The name is " + name + ".  Want to go check it out, just casual no biggie.  Unless you want to make it something more... ;)";
-    var link = "mailto:sample@address.com" + "?subject=Check out this Restaurant!" + message;
-    window.location.href = link;
+        var message = "&body=Hey! Check out this restaurant that I found on Bucket List.  Its SOOOO cool.  The name is " + name + ".  Want to go check it out, just casual no biggie.  Unless you want to make it something more... ;)";
+        var link = "mailto:sample@address.com" + "?subject=Check out this Restaurant!" + message;
+        window.location.href = link;
 }
 
+
+
+function MyBucketController($scope) {
+
+        var restaurant_names = [];
+
+        $(document).on('fbload', function(){
+            FB.api('/me', function(response) { 
+                id = response.id;
+                user_name = response.name;
+
+                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                var data_request = new XMLHttpRequest();
+
+                data_request.open("GET", url, true);
+                
+                data_request.onreadystatechange = function () {
+                        if (data_request.readyState == 4 && data_request.status == 200) {
+                                raw = data_request.responseText;
+                                data = JSON.parse(raw);
+                                console.log(data);
+                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                        name_data = data['0']['bucketlist'][i]['restaurant'];
+                                        names = {name: name_data};
+                                        restaurant_names.push(names);
+                                        
+                                }
+
+                                $scope.$apply(function() {
+                                    $scope.restaurants = restaurant_names;
+                                });
+                            
+                                //put a restaurant on a map
+                                $scope.$apply(function() {
+                                    $scope.put_on_map = function(name) { 
+                                            for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                                    name_data = data['0']['bucketlist'][i]['restaurant'];
+                                                    console.log(name_data);
+                                                    if (name == name_data) {
+                                                        latitude = data['0']['bucketlist'][i]['lat'];
+                                                        longitude = data['0']['bucketlist'][i]['lng'];
+                                                        object = data['0']['bucketlist'][i];
+                                                        break;
+                                                    }
+                                            }
+
+                                            var curr_loc = new google.maps.LatLng(latitude, longitude);
+                                            var marker = new google.maps.Marker({
+                                                    position: curr_loc,
+                                                    map: map,
+                                                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                                                    title: object.restaurant
+                                            });
+                                            
+                                            var message = "<b>Name: </b>" + object['restaurant'] + "<BR><b>Phone Number: </b>" + 
+                                                        object['phone'] + "<BR><b>Yelp Rating (out of 5): </b>" + object['ratings'] + 
+                                                        "<BR><b>Website: </b>" + object['website'] + 
+                                                        "<BR><button onClick='sendMail(\"" + object['restaurant'] +"\",\""
+                                                                                        + object['display_phone'] +"\",\""
+                                                                                        + object['rating'] +"\",\""
+                                                                                        + object['url'] +"\",\""
+                                                                                        + object['lat'] +"\",\""
+                                                                                        + object['lng'] +"\",\""
+                                                        +"\")'> Recommend to a friend!</button>";
+
+                                            infowindow.setContent(message); 
+                                            infowindow.open(map, marker);
+                                            google.maps.event.addListener(marker, 'click', function() {
+                                                    infowindow.open(map, marker);
+                                            });
+                                    };
+                            });
+                                
+                        } else if (data_request.readyState == 4 && data_request.status != 200) {
+                                alert("Failed to Load Data!");
+                        }
+                        
+                };
+
+                data_request.send(null);
+            });
+        });
+    
+}
 
