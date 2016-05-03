@@ -1,6 +1,5 @@
 var myLat = 0;
 var myLng = 0;
-var data;
 var request = new XMLHttpRequest();
 var me = new google.maps.LatLng(myLat, myLng);
 
@@ -332,12 +331,13 @@ function MyBucketController($scope) {
                 data_request.open("GET", url, true);
                 
                 data_request.onreadystatechange = function () {
+                        var data_bucket;
                         if (data_request.readyState == 4 && data_request.status == 200) {
                                 raw = data_request.responseText;
-                                data = JSON.parse(raw);
+                                data_bucket = JSON.parse(raw);
                                 console.log(data);
-                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                        name_data = data['0']['bucketlist'][i]['restaurant'];
+                                for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
+                                        name_data = data_bucket['0']['bucketlist'][i]['restaurant'];
                                         names = {name: name_data};
                                         restaurant_names.push(names);
                                         
@@ -350,19 +350,19 @@ function MyBucketController($scope) {
                                 //put a restaurant on a map
                                 $scope.$apply(function() {
                                     $scope.put_on_map = function(name) { 
-                                            for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                                    name_data = data['0']['bucketlist'][i]['restaurant'];
-                                                    console.log(name_data);
+                                            var latitude, longitude;
+                                            for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
+                                                    name_data = data_bucket['0']['bucketlist'][i]['restaurant'];
                                                     if (name == name_data) {
-                                                        latitude = data['0']['bucketlist'][i]['lat'];
-                                                        longitude = data['0']['bucketlist'][i]['lng'];
-                                                        object = data['0']['bucketlist'][i];
+                                                        latitude = data_bucket['0']['bucketlist'][i]['lat'];
+                                                        longitude = data_bucket['0']['bucketlist'][i]['lng'];
+                                                        object = data_bucket['0']['bucketlist'][i];
                                                         break;
                                                     }
                                             }
 
                                             var curr_loc = new google.maps.LatLng(latitude, longitude);
-                                            var marker = new google.maps.Marker({
+                                            var marker_new = new google.maps.Marker({
                                                     position: curr_loc,
                                                     map: map,
                                                     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
@@ -381,9 +381,9 @@ function MyBucketController($scope) {
                                                         +"\")'> Recommend to a friend!</button>";
 
                                             infowindow.setContent(message); 
-                                            infowindow.open(map, marker);
-                                            google.maps.event.addListener(marker, 'click', function() {
-                                                    infowindow.open(map, marker);
+                                            infowindow.open(map, marker_new);
+                                            google.maps.event.addListener(marker_new, 'click', function() {
+                                                    infowindow.open(map, marker_new);
                                             });
                                     };
                             });
@@ -433,41 +433,46 @@ function GroupController($scope) {
                                 //put friends restaurant on map
                                 $scope.$apply(function() {
                                     $scope.put_friend_map = function(name) { 
+                                            var id, user_name;
                                             for (i = 0; i < data['0']['friends'].length; i++) {
-                                                    id = data['0']['friends'][i]['userId'];
-                                                    user_name = data['0']['friends'][i]['username'];
-
-                                                    var url = "https://food-bucket.herokuapp.com/people?userId=" + id + "&username=" + user_name;
-                                                    var data_request = new XMLHttpRequest();
-
-                                                    data_request.open("GET", url, true);
-
-                                                    data_request.onreadystatechange = function () {
-                                                            if (data_request.readyState == 4 && data_request.status == 200) {
-                                                                    raw = data_request.responseText;
-                                                                    data = JSON.parse(raw);
-                                                                    for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                                                            set_list_Marker(data['0']['bucketlist'][i], "yellow");
-                                                                    }
-
-
-                                                                    lat = data['0']['bucketlist'][0]['lat'];
-                                                                    lng = data['0']['bucketlist'][0]['lng'];
-
-                                                                    var geocoder = new google.maps.Geocoder();
-                                                                    var myLatLng =  new google.maps.LatLng(lat, lng);
-
-                                                                    geocoder.geocode( {'latLng': myLatLng}, function(results, status) {
-                                                                        searchCoords = results[0].geometry.location;
-                                                                        searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
-                                                                        map.panTo(searchCenter);
-                                                                    });
- 
-                                                            };   
-                                                    };
-
-                                                    data_request.send(null);       
+                                                    if (data['0']['friends'][i]['username'] == name) {
+                                                            id = data['0']['friends'][i]['userId'];
+                                                            user_name = data['0']['friends'][i]['username'];
+            
+                                                            break;
+                                                    }
                                             }
+
+                                            var url = "https://food-bucket.herokuapp.com/people?userId=" + id + "&username=" + user_name;
+                                            var data_request = new XMLHttpRequest();
+
+                                            data_request.open("GET", url, true);
+
+                                            data_request.onreadystatechange = function () {
+                                                    if (data_request.readyState == 4 && data_request.status == 200) {
+                                                            raw = data_request.responseText;
+                                                            data = JSON.parse(raw);
+                                                            for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                                                    set_list_Marker(data['0']['bucketlist'][i], "yellow");
+                                                            }
+
+
+                                                            lat = data['0']['bucketlist'][0]['lat'];
+                                                            lng = data['0']['bucketlist'][0]['lng'];
+
+                                                            var geocoder = new google.maps.Geocoder();
+                                                            var myLatLng =  new google.maps.LatLng(lat, lng);
+
+                                                            geocoder.geocode( {'latLng': myLatLng}, function(results, status) {
+                                                                searchCoords = results[0].geometry.location;
+                                                                searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
+                                                                map.panTo(searchCenter);
+                                                            });
+
+                                                    };   
+                                            };
+
+                                            data_request.send(null);       
                                     };
                                 });
                                 
