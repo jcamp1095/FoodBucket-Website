@@ -343,6 +343,7 @@ function MyBucketController($scope) {
                                         
                                 }
 
+                                //scope apply function
                                 $scope.$apply(function() {
                                     $scope.restaurants = restaurant_names;
                                 });
