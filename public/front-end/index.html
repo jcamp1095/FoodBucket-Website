@@ -67,7 +67,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-search-plus fa-stack-1x "></i></span>Recommendations</a>
+                        <a href="#" onclick='add_recommendations()'><span class="fa-stack fa-lg pull-left"><i class="fa fa-search-plus fa-stack-1x "></i></span>Recommendations</a>
                      </li>
                 </ul>
             </div><!-- /#sidebar-wrapper -->
@@ -110,7 +110,7 @@
                                         
                                         output_string = "";
                                         for (i = 0; i < all_people.length; i++) {
-                                                output_string+="<li><a href='#' onclick='sendfriend(\"" + id +"\", \"" + all_people[i].user_id +"\"\"" + all_people[i].user_name +"\")' </a>" + all_people[i].user_name + "</li>";
+                                                output_string+="<li><a href='#' onclick='sendfriend(\"" + id +"\", \"" + all_people[i].user_id +"\", \"" + all_people[i].user_name +"\")' </a>" + all_people[i].user_name + "</li>";
                                         }
 
                                         document.getElementById("placeholder").innerHTML=output_string;

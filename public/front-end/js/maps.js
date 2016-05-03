@@ -19,7 +19,7 @@ var user_name;
 
 
 // Yelp API Set Up --- Begin
-function use_yelp(loc) {
+function use_yelp(loc, color) {
     var auth = { 
         consumerKey : "7MBEG1e9PahKicsLORsPsw",
         consumerSecret : "do4Fgu9DHpGo-IlRX1iAoOeLZlc",
@@ -73,7 +73,8 @@ function use_yelp(loc) {
             //alert("good");
             for (i = 0; i < data['businesses'].length; i++) {
                 //alert(data['businesses']);
-                setMarker(data['businesses'][i]);
+                //set_list_Marker(data['businesses'][i], color);
+                setMarker(data['businesses'][i], color);
             }
         }
     });
@@ -100,7 +101,7 @@ function getMyLocation() {
                     e.preventDefault();
                     loc = document.getElementById('search_input').value;
 
-                    use_yelp(loc);
+                    use_yelp(loc, "red");
 
                     var geocoder = new google.maps.Geocoder();
                     geocoder.geocode( { 'address': loc}, function(results, status) {
@@ -140,7 +141,7 @@ function renderMap()
 }
 
 
-function setMarker(object)
+function setMarker(object, color)
 {
         latit = object['location']['coordinate']['latitude'];
         longit = object['location']['coordinate']['longitude'];
@@ -148,6 +149,7 @@ function setMarker(object)
         var marker = new google.maps.Marker({
                 position: curr_loc,
                 map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
                 title: object.name
         });
                 
@@ -229,8 +231,20 @@ function add_to_map()
                                 data = JSON.parse(raw);
                                 console.log(data);
                                 for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                        set_list_Marker(data['0']['bucketlist'][i]);
+                                        set_list_Marker(data['0']['bucketlist'][i], "blue");
                                 }
+
+                                lat = data['0']['bucketlist'][0]['lat'];
+                                lng = data['0']['bucketlist'][0]['lng'];
+
+                                var geocoder = new google.maps.Geocoder();
+                                var myLatLng =  new google.maps.LatLng(lat, lng);
+
+                                geocoder.geocode( {'latLng': myLatLng}, function(results, status) {
+                                    searchCoords = results[0].geometry.location;
+                                    searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
+                                    map.panTo(searchCenter);
+                                });
                                 
                         } else if (data_request.readyState == 4 && data_request.status != 200) {
                                 alert("Failed to Load Data!");
@@ -244,7 +258,7 @@ function add_to_map()
 }
 
 
-function set_list_Marker(object)
+function set_list_Marker(object, color)
 {
         latit = object['lat'];
         longit = object['lng'];
@@ -253,7 +267,7 @@ function set_list_Marker(object)
         var marker = new google.maps.Marker({
                 position: curr_loc,
                 map: map,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                icon: 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
                 title: object.restaurant
         });
                 
@@ -404,9 +418,11 @@ function GroupController($scope) {
                         if (data_request.readyState == 4 && data_request.status == 200) {
                                 raw = data_request.responseText;
                                 data = JSON.parse(raw);
+                                console.log(data);
                                 for (i = 0; i < data['0']['friends'].length; i++) {
                                         name_data = data['0']['friends'][i]['username'];
-                                        friendslist.push(name_data);
+                                        names = {name: name_data};
+                                        friendslist.push(names);
                                         
                                 }
 
@@ -414,10 +430,44 @@ function GroupController($scope) {
                                     $scope.friends = friendslist;
                                 });
                             
-                                //put a restaurant on a map
+                                //put friends restaurant on map
                                 $scope.$apply(function() {
                                     $scope.put_friend_map = function(name) { 
+                                            for (i = 0; i < data['0']['friends'].length; i++) {
+                                                    id = data['0']['friends'][i]['userId'];
+                                                    user_name = data['0']['friends'][i]['username'];
 
+                                                    var url = "https://food-bucket.herokuapp.com/people?userId=" + id + "&username=" + user_name;
+                                                    var data_request = new XMLHttpRequest();
+
+                                                    data_request.open("GET", url, true);
+
+                                                    data_request.onreadystatechange = function () {
+                                                            if (data_request.readyState == 4 && data_request.status == 200) {
+                                                                    raw = data_request.responseText;
+                                                                    data = JSON.parse(raw);
+                                                                    for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                                                            set_list_Marker(data['0']['bucketlist'][i], "yellow");
+                                                                    }
+
+
+                                                                    lat = data['0']['bucketlist'][0]['lat'];
+                                                                    lng = data['0']['bucketlist'][0]['lng'];
+
+                                                                    var geocoder = new google.maps.Geocoder();
+                                                                    var myLatLng =  new google.maps.LatLng(lat, lng);
+
+                                                                    geocoder.geocode( {'latLng': myLatLng}, function(results, status) {
+                                                                        searchCoords = results[0].geometry.location;
+                                                                        searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
+                                                                        map.panTo(searchCenter);
+                                                                    });
+ 
+                                                            };   
+                                                    };
+
+                                                    data_request.send(null);       
+                                            }
                                     };
                                 });
                                 
@@ -431,5 +481,32 @@ function GroupController($scope) {
             });
         });
     
+}
+
+
+function add_recommendations() {
+        num = Math.floor(Math.random() * 10);
+
+        locations = [];
+        locations.push('Boston, MA');
+        locations.push('New York, NY');
+        locations.push('Paris, France');
+        locations.push('London, Endland');
+        locations.push('Cambridge, MA');
+        locations.push('San+Francisco, CA');
+        locations.push('Dallas, TX');
+        locations.push('New Orleans, LA');
+        locations.push('Philadelphia, PA');
+        locations.push('Chicago, Il');
+        locations.push('Nashville, TN');
+
+        use_yelp(locations[num], "purple");
+
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': locations[num]}, function(results, status) {
+            searchCoords = results[0].geometry.location;
+            searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
+            map.panTo(searchCenter);
+        });
 }
 
