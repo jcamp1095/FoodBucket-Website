@@ -20,7 +20,7 @@ var user_name;
 FB.api('/me', function(response) {
         id = response.id;
         user_name = response.name;
-}
+});
 
 // Yelp API Set Up --- Begin
 function use_yelp(loc) {
