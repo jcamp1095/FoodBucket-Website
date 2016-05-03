@@ -10,7 +10,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
         <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
-        <script src="js/fb.js"></script>
         
     </head>
 
@@ -75,10 +74,48 @@
 
 
     <!-- Javascript imports -->
-
+    <script src="js/fb.js"></script>
     <script src="js/maps.js"></script>
     <script src="js/sidebar.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script>
+    function MyBucketController($scope) {
+        $(document).on('fbload', function(){
+            FB.api('/me', function(response) { 
+                id = response.id;
+                user_name = response.name;
+
+                var restaurant_names = [];
+
+                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                var data_request = new XMLHttpRequest();
+
+                data_request.open("GET", url, true);
+                
+                data_request.onreadystatechange = function () {
+                        if (data_request.readyState == 4 && data_request.status == 200) {
+                                raw = data_request.responseText;
+                                data = JSON.parse(raw);
+                                console.log(data);
+                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                        name_data = data['0']['bucketlist'][i]['restaurant'];
+                                        names = {"name": name_data};
+                                        console.log(names);
+                                        restaurant_names[i] = names;
+                                }
+                                
+                        } else if (data_request.readyState == 4 && data_request.status != 200) {
+                                alert("Failed to Load Data!");
+                        }
+
+                        $scope.restaurants = restaurant_names;
+                };
+
+                data_request.send(null);
+            });
+        });
+    }
+    </script>
 
     </body>
 </html>
