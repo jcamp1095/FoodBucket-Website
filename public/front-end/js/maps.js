@@ -98,7 +98,6 @@ function getMyLocation() {
                     e.preventDefault();
                     loc = document.getElementById('search_input').value;
 
-                    send_user_info();
                     use_yelp(loc);
 
                     var geocoder = new google.maps.Geocoder();
@@ -220,8 +219,8 @@ function add_to_map()
                                 raw = data_request.responseText;
                                 data = JSON.parse(raw);
                                 console.log(data);
-                                for (i = 0; i < data['bucketlist'].length; i++) {
-                                        set_list_Marker(data['bucketlist'][i]);
+                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                        set_list_Marker(data['0']['bucketlist'][i]);
                                 }
                                 
                         } else if (data_request.readyState == 4 && data_request.status != 200) {
@@ -245,6 +244,7 @@ function set_list_Marker(object)
         var marker = new google.maps.Marker({
                 position: curr_loc,
                 map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
                 title: object.restaurant
         });
                 
@@ -278,4 +278,37 @@ function send_user_info(id, user_name) {
                 });
         });
 }
+
+
+function MyBucketController($scope) {
+            var restaurants = [];
+            FB.api('/me', function(response) {
+                id = response.id;
+                user_name = response.name;
+
+                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                var data_request = new XMLHttpRequest();
+
+                data_request.open("GET", url, true);
+                
+                data_request.onreadystatechange = function () {
+                        if (data_request.readyState == 4 && data_request.status == 200) {
+                                raw = data_request.responseText;
+                                data = JSON.parse(raw);
+                                console.log(data);
+                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                        name = {name: data['0']['bucketlist']['restaurant']};
+                                        restaurants[i] = name;
+                                }
+                                
+                        } else if (data_request.readyState == 4 && data_request.status != 200) {
+                                alert("Failed to Load Data!");
+                        }
+                };
+
+                data_request.send(null);
+
+                $scope.restaurants = restaurants;
+            });
+        }
 
