@@ -15,6 +15,8 @@ var marker;
 var infowindow = new google.maps.InfoWindow();
 var my_list;
 var id;
+var user_name;
+
 
 // Yelp API Set Up --- Begin
 function use_yelp(loc) {
@@ -281,34 +283,29 @@ function send_user_info(id, user_name) {
 
 
 function MyBucketController($scope) {
-            var restaurants = [];
-            FB.api('/me', function(response) {
-                id = response.id;
-                user_name = response.name;
+        var restaurant_names = [];
 
-                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
-                var data_request = new XMLHttpRequest();
+        var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+        var data_request = new XMLHttpRequest();
 
-                data_request.open("GET", url, true);
-                
-                data_request.onreadystatechange = function () {
-                        if (data_request.readyState == 4 && data_request.status == 200) {
-                                raw = data_request.responseText;
-                                data = JSON.parse(raw);
-                                console.log(data);
-                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                        name = {name: data['0']['bucketlist']['restaurant']};
-                                        restaurants[i] = name;
-                                }
-                                
-                        } else if (data_request.readyState == 4 && data_request.status != 200) {
-                                alert("Failed to Load Data!");
+        data_request.open("GET", url, true);
+        
+        data_request.onreadystatechange = function () {
+                if (data_request.readyState == 4 && data_request.status == 200) {
+                        raw = data_request.responseText;
+                        data = JSON.parse(raw);
+                        console.log(data);
+                        for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                name = {name: data['0']['bucketlist']['restaurant']};
+                                restaurant_names[i] = name;
                         }
-                };
+                        
+                } else if (data_request.readyState == 4 && data_request.status != 200) {
+                        alert("Failed to Load Data!");
+                }
+                $scope.restaurants = restaurant_names;
+        };
 
-                data_request.send(null);
-
-                $scope.restaurants = restaurants;
-            });
-        }
+        data_request.send(null);
+}
 
