@@ -9,7 +9,7 @@ var myOptions = {
     center: me,
     mapTypeId: google.maps.MapTypeId.ROADMAP
 };
-//fdsakjrewkljrlkwe
+
 var map;
 var marker;
 var infowindow = new google.maps.InfoWindow();
@@ -17,10 +17,6 @@ var my_list;
 var id;
 var user_name;
 
-FB.api('/me', function(response) {
-        id = response.id;
-        user_name = response.name;
-});
 
 // Yelp API Set Up --- Begin
 function use_yelp(loc) {
@@ -161,6 +157,13 @@ function setMarker(object)
                     object['display_phone'] + "<BR><b>Yelp Rating (out of 5): </b>" + object['rating'] + 
                     "<BR><b>Address: </b>" + object['location']['display_address'] + 
                     "<BR><b>Categories: </b>" + object['categories'] +"<BR><a href=" + object['url'] + ">go to yelp </a>" + 
+                    "<BR><button onClick='sendMail(\"" + object['name'] +"\",\""
+                                                                                        + object['display_phone'] +"\",\""
+                                                                                        + object['rating'] +"\",\""
+                                                                                        + object['url'] +"\",\""
+                                                                                        + object['location']['coordinate']['latitude'] +"\",\""
+                                                                                        + object['location']['coordinate']['longitude'] +"\",\""
+                        +"\")'> Recommend to a friend!</button>" + 
                     "<BR><button type='button' id = 'button_add' onClick='addtolist(\"" + object['name'] +"\",\""
                                                                                         + object['display_phone'] +"\",\""
                                                                                         + object['rating'] +"\",\""
@@ -286,30 +289,10 @@ function send_user_info(id, user_name) {
 }
 
 
-function MyBucketController($scope) {
-        var restaurant_names = [];
-
-        var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
-        var data_request = new XMLHttpRequest();
-
-        data_request.open("GET", url, true);
-        
-        data_request.onreadystatechange = function () {
-                if (data_request.readyState == 4 && data_request.status == 200) {
-                        raw = data_request.responseText;
-                        data = JSON.parse(raw);
-                        console.log(data);
-                        for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                name = {name: data['0']['bucketlist']['restaurant']};
-                                restaurant_names[i] = name;
-                        }
-                        
-                } else if (data_request.readyState == 4 && data_request.status != 200) {
-                        alert("Failed to Load Data!");
-                }
-                $scope.restaurants = restaurant_names;
-        };
-
-        data_request.send(null);
+function sendMail(name, phone, rating, url, lat, lng) {
+    var message = "&body=Hey! Check out this restaurant that I found on Bucket List.  Its SOOOO cool.  The name is " + name + ".  Want to go check it out, just casual no biggie.  Unless you want to make it something more... ;)";
+    var link = "mailto:sample@address.com" + "?subject=Check out this Restaurant!" + message;
+    window.location.href = link;
 }
+
 

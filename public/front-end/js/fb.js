@@ -1,15 +1,15 @@
 window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1030706586965286',
-      xfbml      : true,
-      version    : 'v2.6'
-    });
+        FB.init({
+          appId      : '1030706586965286',
+          xfbml      : true,
+          version    : 'v2.6'
+        });
 
-
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-    });
+        FB.getLoginStatus(function(response) {
+          statusChangeCallback(response);
+        });
 };
+
 
 // Load the SDK asynchronously
 (function(d, s, id) {
@@ -48,6 +48,7 @@ function checkLoginState() {
 
 
 function testAPI() {
+    $(document).trigger('fbload'); 
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
         console.log('Successful login for: ' + response.name);
