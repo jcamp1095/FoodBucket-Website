@@ -56,6 +56,10 @@ app.get('/', function(request, response) {
 	response.sendFile('public/front-end/index.html', {root: __dirname});
 });
 
+/*______________________________________________________________________________
+
+								USERS COLLECTION
+______________________________________________________________________________*/
 
 
 //
@@ -80,7 +84,6 @@ app.get('/user', function(request, response) {
 		});
 	});
 });
-
 
 //
 // POST A USER TO THE DATABASE
@@ -205,6 +208,13 @@ app.post('/sendRestaurant', function(request, response) {
 	    });
 	});
 });
+
+/*______________________________________________________________________________
+
+								GROUPS COLLECTION
+______________________________________________________________________________*/
+
+
 
 //
 // Let the node app run
