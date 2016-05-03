@@ -83,6 +83,30 @@ app.get('/user', function(request, response) {
 
 
 //
+// GET ALL USERS
+//
+app.get('/people', function(request, response) {
+
+	var userId = request.query.userId;
+	var username = request.query.username;
+	 
+	if(userId == "" || userId == undefined) {
+		response.send(errormsg);
+	}
+	
+	db.collection('users', function(error, theUsers) {
+		theUsers.find().toArray(function(error, theData) {
+			if (error) {
+				response.send(500);
+			}
+
+			response.send(theData);
+		});
+	});
+});
+
+
+//
 // POST A USER TO THE DATABASE
 // - Sends back the JSON object of the user who is specified by the userId
 //

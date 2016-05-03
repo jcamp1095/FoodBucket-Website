@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/test.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
         <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
         
@@ -29,6 +30,7 @@
                     <div class="form-group">
                         <input type="search" class="form-control" id="search_input" placeholder="Search by location...">
                     </div>
+                    <button type="button" id="addfriends" onclick='find_friends()'class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Add Friends</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <fb:login-button scope="public_profile,email" class="center" onlogin="checkLoginState();"></fb:login-button>
@@ -70,6 +72,53 @@
                 </ul>
             </div><!-- /#sidebar-wrapper -->
         </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add friends to your group bucket list!</h4>
+          </div>
+          <div class="modal-body">
+            <script>
+            function find_friends(){
+                    FB.api('/me', function(response) { 
+                        id = response.id;
+                        user_name = response.name;
+                        var url = "https://food-bucket.herokuapp.com/people?userId=" + id + "&username=" + user_name;
+                        var data_request = new XMLHttpRequest();
+
+                        data_request.open("GET", url, true);
+                        
+                        data_request.onreadystatechange = function () {
+                                if (data_request.readyState == 4 && data_request.status == 200) {
+                                        alert("got here");
+                                        raw = data_request.responseText;
+                                        data = JSON.parse(raw);
+                                        console.log(data);
+                                        /*for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                                name_data = data['0']['bucketlist'][i]['restaurant'];
+                                                names = {name: name_data};
+                                                restaurant_names.push(names);
+                                                
+                                        }*/
+                                };   
+                        };
+                    });     
+            }; 
+            </script>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
     </div>
 
 
