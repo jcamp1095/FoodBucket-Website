@@ -512,4 +512,3 @@ function add_recommendations() {
             map.panTo(searchCenter);
         });
 }
-
