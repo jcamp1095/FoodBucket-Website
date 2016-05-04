@@ -41,6 +41,7 @@ function checkLoginState() {
     });
 
     send_user_info();
+
 }
 
 

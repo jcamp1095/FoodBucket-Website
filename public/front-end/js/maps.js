@@ -199,7 +199,6 @@ function addtolist(name, phone, rating, url, lat, lng)
                  type: "POST",
                  url: "https://food-bucket.herokuapp.com/sendRestaurant",
                  data: food_data,
-                 success: alert("Restaurant Added!"),
                  dataType: 'json'
                 });
         });
@@ -298,8 +297,6 @@ function send_user_info(id, user_name) {
                  data: user_data,
                  dataType: 'json'
                 });
-
-                window.location.reload();
         });
 }
 
@@ -334,7 +331,7 @@ function MyBucketController($scope) {
                                 for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
                                         name_data = data_bucket['0']['bucketlist'][i]['restaurant'];
                                         names = {name: name_data};
-                                        restaurant_names.push(names);     
+                                        restaurant_names.push(names);
                                 }
 
                                 //scope apply function
