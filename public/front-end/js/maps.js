@@ -287,7 +287,7 @@ function set_list_Marker(object, color)
         });
 }
 
-//send userRR
+//send user
 function send_user_info(id, user_name) {
 
         FB.api('/me', function(response) {
@@ -335,7 +335,6 @@ function MyBucketController($scope) {
                         if (data_request.readyState == 4 && data_request.status == 200) {
                                 raw = data_request.responseText;
                                 data_bucket = JSON.parse(raw);
-                                console.log(data);
                                 for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
                                         name_data = data_bucket['0']['bucketlist'][i]['restaurant'];
                                         names = {name: name_data};

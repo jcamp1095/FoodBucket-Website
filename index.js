@@ -153,10 +153,6 @@ app.post('/sendUser', function(request, response) {
 					});
 				});
 			}
-
-			else {
-				response.send(200);
-			}
 		});	
 	});
 });
