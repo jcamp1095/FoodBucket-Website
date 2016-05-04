@@ -57,7 +57,6 @@ function use_yelp(loc, color) {
 
     var parameterMap = OAuth.getParameterMap(message.parameters);
     parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
-    //console.log(parameterMap); // TODO: Delete 
 
     var bestRestaurant = "Some random restaurant";
     // Yelp API Set UP --- End
@@ -69,10 +68,7 @@ function use_yelp(loc, color) {
         'dataType': 'jsonp',
         'jsonpCallback': 'cb',
         'success': function(data, textStats, XMLHttpRequest) {
-            //alert("good");
             for (i = 0; i < data['businesses'].length; i++) {
-                //alert(data['businesses']);
-                //set_list_Marker(data['businesses'][i], color);
                 setMarker(data['businesses'][i], color);
             }
         }
@@ -203,7 +199,6 @@ function addtolist(name, phone, rating, url, lat, lng)
                  type: "POST",
                  url: "https://food-bucket.herokuapp.com/sendRestaurant",
                  data: food_data,
-                 success: alert("it worked son"),
                  dataType: 'json'
                 });
         });
@@ -228,7 +223,6 @@ function add_to_map()
                         if (data_request.readyState == 4 && data_request.status == 200) {
                                 raw = data_request.responseText;
                                 data = JSON.parse(raw);
-                                console.log(data);
                                 for (i = 0; i < data['0']['bucketlist'].length; i++) {
                                         set_list_Marker(data['0']['bucketlist'][i], "blue");
                                 }
@@ -274,7 +268,7 @@ function set_list_Marker(object, color)
 
                 var message = "<b>Name: </b>" + object['restaurant'] + "<BR><b>Phone Number: </b>" + 
                     object['phone'] + "<BR><b>Yelp Rating (out of 5): </b>" + object['ratings'] + 
-                    "<BR><b>Website: </b>" + object['website'] +  "<BR><button onClick='sendMail(\"" + object['restaurant'] +"\",\""
+                    "<BR><a href=" + object['website'] + ">Go to yelp </a>"+  "<BR><button onClick='sendMail(\"" + object['restaurant'] +"\",\""
                                                     + object['display_phone'] +"\",\""
                                                     + object['rating'] +"\",\""
                                                     + object['url'] +"\",\""
@@ -301,7 +295,6 @@ function send_user_info(id, user_name) {
                  type: "POST",
                  url: "https://food-bucket.herokuapp.com/sendUser",
                  data: user_data,
-                 success: alert ("sent user data"),
                  dataType: 'json'
                 });
         });
@@ -335,13 +328,10 @@ function MyBucketController($scope) {
                         if (data_request.readyState == 4 && data_request.status == 200) {
                                 raw = data_request.responseText;
                                 data_bucket = JSON.parse(raw);
-                                console.log(data);
                                 for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
                                         name_data = data_bucket['0']['bucketlist'][i]['restaurant'];
                                         names = {name: name_data};
-                                        restaurant_names.push(names);
-                                        console.log(names);
-                                        
+                                        restaurant_names.push(names);     
                                 }
 
                                 //scope apply function
@@ -369,7 +359,7 @@ function MyBucketController($scope) {
                                             
                                             var message = "<b>Name: </b>" + object['restaurant'] + "<BR><b>Phone Number: </b>" + 
                                                         object['phone'] + "<BR><b>Yelp Rating (out of 5): </b>" + object['ratings'] + 
-                                                        "<BR><b>Website: </b>" + object['website'] + 
+                                                        "<BR><a href=" + object['website'] + ">Go to yelp </a>" + 
                                                         "<BR><button onClick='sendMail(\"" + object['restaurant'] +"\",\""
                                                                                         + object['display_phone'] +"\",\""
                                                                                         + object['rating'] +"\",\""
@@ -413,12 +403,12 @@ function GroupController($scope) {
                 data_request.open("GET", url, true);
                 
                 data_request.onreadystatechange = function () {
+                        var data_group;
                         if (data_request.readyState == 4 && data_request.status == 200) {
                                 raw = data_request.responseText;
-                                data = JSON.parse(raw);
-                                console.log(data);
-                                for (i = 0; i < data['0']['friends'].length; i++) {
-                                        name_data = data['0']['friends'][i]['username'];
+                                data_group = JSON.parse(raw);
+                                for (i = 0; i < data_group['0']['friends'].length; i++) {
+                                        name_data = data_group['0']['friends'][i]['username'];
                                         names = {name: name_data};
                                         friendslist.push(names);
                                         
@@ -426,57 +416,72 @@ function GroupController($scope) {
 
                                 $scope.$apply(function() {
                                     $scope.friends = friendslist;
-                                });
-                            
-                                //put friends restaurant on map
-                                $scope.$apply(function() {
+
                                     $scope.put_friend_map = function(name) { 
-                                            var id, user_name;
-                                            for (i = 0; i < data['0']['friends'].length; i++) {
-                                                    if (data['0']['friends'][i]['username'] == name) {
-                                                            id = data['0']['friends'][i]['userId'];
-                                                            user_name = data['0']['friends'][i]['username'];
-            
-                                                            break;
-                                                    }
-                                            }
+                                        FB.api('/me', function(response) { 
+                                                id = response.id;
+                                                user_name = response.name;
 
-                                            var url = "https://food-bucket.herokuapp.com/people?userId=" + id + "&username=" + user_name;
-                                            var data_request = new XMLHttpRequest();
+                                                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                                                var data_request2 = new XMLHttpRequest();
 
-                                            data_request.open("GET", url, true);
+                                                data_request2.open("GET", url, true);
+                                                
+                                                data_request2.onreadystatechange = function () {
+                                                        if (data_request2.readyState == 4 && data_request2.status == 200) {
+                                                                raw = data_request2.responseText;
+                                                                var data_group = JSON.parse(raw);
+                                                                var id, user_name;
+                                                                for (i = 0; i < data_group['0']['friends'].length; i++) {
+                                                                        if (data_group['0']['friends'][i]['username'] == name) {
+                                                                                id = data_group['0']['friends'][i]['userId'];
+                                                                                user_name = data_group['0']['friends'][i]['username'];
+                                
+                                                                                break;
+                                                                        }
+                                                                }
 
-                                            data_request.onreadystatechange = function () {
-                                                    if (data_request.readyState == 4 && data_request.status == 200) {
-                                                            raw = data_request.responseText;
-                                                            data = JSON.parse(raw);
-                                                            for (i = 0; i < data['0']['bucketlist'].length; i++) {
-                                                                    set_list_Marker(data['0']['bucketlist'][i], "yellow");
-                                                            }
+                                                                var url = "https://food-bucket.herokuapp.com/user?userId=" + id + "&username=" + user_name;
+                                                                var data_request = new XMLHttpRequest();
+
+                                                                data_request.open("GET", url, true);
+
+                                                                data_request.onreadystatechange = function () {
+                                                                        if (data_request.readyState == 4 && data_request.status == 200) {
+                                                                                raw = data_request.responseText;
+                                                                                data = JSON.parse(raw);
+                                                                                for (i = 0; i < data['0']['bucketlist'].length; i++) {
+                                                                                        set_list_Marker(data['0']['bucketlist'][i], "yellow");
+                                                                                }
 
 
-                                                            lat = data['0']['bucketlist'][0]['lat'];
-                                                            lng = data['0']['bucketlist'][0]['lng'];
+                                                                                lat = data['0']['bucketlist'][0]['lat'];
+                                                                                lng = data['0']['bucketlist'][0]['lng'];
 
-                                                            var geocoder = new google.maps.Geocoder();
-                                                            var myLatLng =  new google.maps.LatLng(lat, lng);
+                                                                                var geocoder = new google.maps.Geocoder();
+                                                                                var myLatLng =  new google.maps.LatLng(lat, lng);
 
-                                                            geocoder.geocode( {'latLng': myLatLng}, function(results, status) {
-                                                                searchCoords = results[0].geometry.location;
-                                                                searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
-                                                                map.panTo(searchCenter);
-                                                            });
+                                                                                geocoder.geocode( {'latLng': myLatLng}, function(results, status) {
+                                                                                    searchCoords = results[0].geometry.location;
+                                                                                    searchCenter = new google.maps.LatLng(searchCoords.lat(), searchCoords.lng());
+                                                                                    map.panTo(searchCenter);
+                                                                                });
 
-                                                    };   
-                                            };
+                                                                        };   
+                                                                };
 
-                                            data_request.send(null);       
+                                                                data_request.send(null);    
+                                                        } else if (data_request.readyState == 4 && data_request.status != 200) {
+                                                            alert("Failed to Load Data!");   
+                                                          };
+                                                };
+                                                data_request2.send(null);
+                                        });
                                     };
                                 });
                                 
-                        } else if (data_request.readyState == 4 && data_request.status != 200) {
-                                alert("Failed to Load Data!");
-                        }
+                            
+                        };
                         
                 };
 

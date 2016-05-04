@@ -21,8 +21,6 @@ window.fbAsyncInit = function() {
 }(document, 'script', 'facebook-jssdk'));
 
 function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
     if (response.status === 'connected') {
         // Logged into your app and Facebook.
         testAPI();
@@ -43,15 +41,14 @@ function checkLoginState() {
     });
 
     send_user_info();
+    window.location.reload();
 }
 
 
 
 function testAPI() {
     $(document).trigger('fbload'); 
-    console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
-        console.log('Successful login for: ' + response.name);
         document.getElementById('status').innerHTML =
         'Welcome, ' + response.name + '!';
     }); 
