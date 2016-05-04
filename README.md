@@ -60,15 +60,17 @@ The application works when location services are turned on for the browser. Base
 
 In order to use the application, first log into Facebook. To add restaurants to the bucketlist, search a city and state in the search box and hit enter. The top twenty restaurants in the city will appear as markers. Click the markers to show an infowindow, then you can send a recommendation to a friend or click the add button to add the restaurant to your list. 
 
-To view your bucket list, hover over the retaurants text of the sidebar. Selecting "restaurants" will display all restaurants in the bucketlist on the map. Selecting individual restaurants will cause only that restaurant to appear on the map.
+To view your bucket list, hover over the retaurants text of the sidebar. Selecting "restaurants" will display all restaurants in the bucketlist on the map. Selecting individual restaurants will cause only that restaurant to appear on the map. If you added a restaurant, make sure to refresh the page to see the updated list. 
 
-Users can also add friends, which are users currently using the application. To add a friend, click the add friend button on the side. A modal will pop up and simply click the friend you wish to add. If you hover over the friends text on the side bar, the list of friends will pop up. Selecting the friend(s) wil cause their bucketlist restaurants to appear on the map. 
+Users can also add friends, which are users currently using the application. To add a friend, click the add friend button on the side. A modal will pop up and simply click the friend you wish to add. If you hover over the friends text on the side bar, the list of friends will pop up. Selecting the friend(s) wil cause their bucketlist restaurants to appear on the map. To see the updated friends if new friends were added, refresh the page. 
 
 Users may also hit the recommendations button on the sidebar to view top restaurants in popular cities.
  
 For mobile users, we made our
 
 To Fix in the future: 
+
+When friends and restaurants are added to the bucketlist, the lists on the side bar do not automatically update. Users need to refresh to see the changes. We hope to one day fix this functionality so that the lists are automatically updated. 
 
 Some markers have bugs and do not allow users to add them to the restaurants. We suspect this may be due to some yelp properties that are null. 
 
