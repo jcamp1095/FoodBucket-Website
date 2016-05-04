@@ -2,78 +2,85 @@
 <html ng-app>
     <head>
         <meta charset="UTF-8">
-        <title>Awesome Bootstrap 3 Sidebar Navigation</title>
-
+        <title>Bucket List</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
         <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-        <link rel="stylesheet" href="css/test.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+        <link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+        <link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+        <script src="js/modernizr.js"></script> <!-- Modernizr -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
         <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+        <script src="js/jquery-2.1.4.js"></script>
+        <script src="js/jquery.menu-aim.js"></script>
+        <script src="js/main.js"></script> <!-- Resource jQuery -->
+
         
     </head>
 
     <body>
-        <nav class="navbar navbar-default no-margin">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header fixed-brand">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  id="menu-toggle">
-                    <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-                </button>
-                <a class="navbar-brand" href="#"><i class="fa fa-map fa-4"></i> Food Bucketlist</a>
-            </div><!-- navbar-header-->
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="search" class="form-control" id="search_input" placeholder="Search by location...">
-                    </div>
-                    <button type="button" id="addfriends" onclick='find_friends()'class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Add Friends</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <fb:login-button scope="public_profile,email" class="center" onlogin="checkLoginState();"></fb:login-button>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" id="status"></a></li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
+    <header class="cd-main-header">
+        <a href="#" class="cd-logo"> Food Bucket</a>
+        
+        <div class="cd-search is-hidden">
+            <form action="#">
+                <input type="search" id="search_input" placeholder="Search by location...">
+            </form>
+        </div> <!-- cd-search -->
+
+        <a href="#" class="cd-nav-trigger">Menu<span></span></a>
+    </header> <!-- .cd-main-header -->
+
+    <main id="parent" class="cd-main-content">
+        <nav class="cd-side-nav" id="side">
+            <ul>
+                <li class="cd-label">Login</li>
+                <div class="fb-login-button " data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="true" onlogin="checkLoginState();"></div>
+                <li><a href="#" id="status"></a></li>
+
+            </ul>   
+            <ul>
+                <li class="cd-label">My BucketList</li>
+                <li ng-controller="MyBucketController" class="has-children overview">
+                    <a href="#" onclick='add_to_map()'>Restaurants</a>
+                    
+                    <ul>
+                        <li ng-repeat="restaurant in restaurants"><a href="#" ng-click="put_on_map(restaurant.name)">{{restaurant.name}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul>
+                <li class="cd-label">Group Bucktlist</li>
+                <li class="has-children overview" ng-controller="GroupController">
+                    <a href="#">Food Friends</a>
+                    
+                    <ul>
+                        <li ng-repeat="friend in friends"><a href="#" ng-click="put_friend_map(friend.name)">{{friend.name}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul>
+                <li class="cd-label" >Recommendations</li>
+                <li class="action-btn"><a href="#" onclick='add_recommendations()'>Find Restaurants</a></li>
+            </ul>
+
+            <ul>
+                <li class="cd-label">Friends</li>
+                <li class="action-btn" id="addfriends" onclick='find_friends()' data-toggle="modal" data-target="#myModal"><a href="#">Add Friends</a></li>
+            </ul>
         </nav>
-
-        <!-- Import Google Maps -->
-        <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-
-        <!-- Sidebar / Map Container -->
-        <div id="container">
-            <!-- Google Map -->
+        <div class="content-wrapper">
+            <!-- Import Google Maps -->
+                <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
             <div id="map">MAP</div>
-            
-            <!-- SideBar -->
-            <div id="sidebar-wrapper">
-                <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-                    <li ng-controller="MyBucketController">
-                        <a href="#" onclick='add_to_map()'><span class="fa-stack fa-lg pull-left"><i class="fa fa-user fa-stack-1x "></i></span> My Bucketlist</a>
-                        <ul ng-repeat="restaurant in restaurants" class="nav-pills nav-stacked" style="list-style-type:none;">
-                            <li><a href="#" ng-click="put_on_map(restaurant.name)"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>{{restaurant.name}}</a></li>
-                           
-                        </ul>
-                    </li>
-                    <li ng-controller="GroupController">
-                        <a href="#"><span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i></span> Group Bucketlists</a>
-                        <ul ng-repeat="friend in friends" class="nav-pills nav-stacked" style="list-style-type:none;">
-                            <li><a href="#" ng-click="put_friend_map(friend.name)"><span class="fa-stack fa-lg pull-left"><i class="fa fa-map-pin fa-stack-1x "></i></span>{{friend.name}}</a></li>
-                           
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" onclick='add_recommendations()'><span class="fa-stack fa-lg pull-left"><i class="fa fa-search-plus fa-stack-1x "></i></span>Recommendations</a>
-                     </li>
-                </ul>
-            </div><!-- /#sidebar-wrapper -->
-        </div>
-    </div>
-
+        </div> <!-- .content-wrapper -->
+    </main> <!-- .cd-main-content -->
     <!-- Modal -->
     <div id="myModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
@@ -145,12 +152,11 @@
       </div>
     </div>
 
-
     <!-- Javascript imports -->
     <script src="js/fb.js"></script>
     <script src="js/maps.js"></script>
-    <script src="js/sidebar.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+
 
     </body>
 </html>

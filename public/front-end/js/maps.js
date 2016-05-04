@@ -340,16 +340,13 @@ function MyBucketController($scope) {
                                         name_data = data_bucket['0']['bucketlist'][i]['restaurant'];
                                         names = {name: name_data};
                                         restaurant_names.push(names);
+                                        console.log(names);
                                         
                                 }
 
                                 //scope apply function
                                 $scope.$apply(function() {
                                     $scope.restaurants = restaurant_names;
-                                });
-                            
-                                //put a restaurant on a map
-                                $scope.$apply(function() {
                                     $scope.put_on_map = function(name) { 
                                             var latitude, longitude;
                                             for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
