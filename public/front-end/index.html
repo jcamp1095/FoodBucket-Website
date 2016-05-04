@@ -16,7 +16,7 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-default no-margin">
+        <nav class="navbar navbar-default no-margin" ng-controller="MyBucketController">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header fixed-brand">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  id="menu-toggle">
@@ -34,7 +34,7 @@
                     <button type="button" id="addfriends" onclick='find_friends()'class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Add Friends</button>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <fb:login-button scope="public_profile,email" class="center" onlogin="checkLoginState();"></fb:login-button>
+                    <fb:login-button data-auto-logout-link="true" ng-click="reset()" scope="public_profile,email" class="center" onlogin="checkLoginState();"></fb:login-button>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#" id="status"></a></li>

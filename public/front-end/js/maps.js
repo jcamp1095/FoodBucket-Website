@@ -317,6 +317,11 @@ function sendMail(name, phone, rating, url, lat, lng) {
 
 
 function MyBucketController($scope) {
+        $scope.orig = angular.copy();
+        $scope.reset = function() {
+                $scope.data = $scope.orig;
+        }
+
 
         var restaurant_names = [];
 
@@ -345,10 +350,7 @@ function MyBucketController($scope) {
                                 //scope apply function
                                 $scope.$apply(function() {
                                     $scope.restaurants = restaurant_names;
-                                });
-                            
-                                //put a restaurant on a map
-                                $scope.$apply(function() {
+
                                     $scope.put_on_map = function(name) { 
                                             var latitude, longitude;
                                             for (i = 0; i < data_bucket['0']['bucketlist'].length; i++) {
@@ -514,4 +516,20 @@ function add_recommendations() {
             map.panTo(searchCenter);
         });
 }
+
+
+function reset_screen() {
+
+
+}
+
+
+
+
+
+
+
+
+
+
 
