@@ -309,7 +309,7 @@ function send_user_info(id, user_name) {
 
 
 function sendMail(name, phone, rating, url, lat, lng) {
-        var message = "&body=Hey! Check out this restaurant that I found on Bucket List.  Its SOOOO cool.  The name is " + name + ".  Want to go check it out, just casual no biggie.  Unless you want to make it something more... ;)";
+        var message = "&body=Hey! Check out this restaurant that I found on Bucket List." + name;
         var link = "mailto:sample@address.com" + "?subject=Check out this Restaurant!" + message;
         window.location.href = link;
 }
