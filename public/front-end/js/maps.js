@@ -199,6 +199,7 @@ function addtolist(name, phone, rating, url, lat, lng)
                  type: "POST",
                  url: "https://food-bucket.herokuapp.com/sendRestaurant",
                  data: food_data,
+                 success: alert("Restaurant Added!"),
                  dataType: 'json'
                 });
         });
