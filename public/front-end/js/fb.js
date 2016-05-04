@@ -41,7 +41,6 @@ function checkLoginState() {
     });
 
     send_user_info();
-    window.location.reload();
 }
 
 

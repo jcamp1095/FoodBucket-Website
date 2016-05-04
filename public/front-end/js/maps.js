@@ -297,6 +297,8 @@ function send_user_info(id, user_name) {
                  data: user_data,
                  dataType: 'json'
                 });
+
+                window.location.reload();
         });
 }
 
