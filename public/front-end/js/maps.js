@@ -16,7 +16,6 @@ var my_list;
 var id;
 var user_name;
 
-
 // Yelp API Set Up --- Begin
 function use_yelp(loc, color) {
     var auth = { 
