@@ -143,7 +143,7 @@ function setMarker(object, color)
         var marker = new google.maps.Marker({
                 position: curr_loc,
                 map: map,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
+                icon: 'https://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
                 title: object.name
         });
                 
@@ -260,7 +260,7 @@ function set_list_Marker(object, color)
         var marker = new google.maps.Marker({
                 position: curr_loc,
                 map: map,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
+                icon: 'https://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png',
                 title: object.restaurant
         });
                 
@@ -353,7 +353,7 @@ function MyBucketController($scope) {
                                             var marker_new = new google.maps.Marker({
                                                     position: curr_loc,
                                                     map: map,
-                                                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                                                    icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
                                                     title: object.restaurant
                                             });
                                             
