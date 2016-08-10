@@ -46,7 +46,7 @@ function use_yelp(loc, color) {
     //Parameters for user
 
     var message = {
-        'action': 'http://api.yelp.com/v2/search',
+        'action': 'https://api.yelp.com/v2/search',
         'method': 'GET',
         'parameters': parameters
     };
